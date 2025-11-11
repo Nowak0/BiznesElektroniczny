@@ -169,53 +169,36 @@ def scrape_product_links_selenium(driver, category_url, category_name):
 # POBIERANIE DANYCH PRODUKTU (selenium)
 
 def scrape_product_data_selenium(driver, product_url, product_name):
-    """Pobiera szczegółowe dane produktu (cena, opis, kategoria, Kolor/Rozmiar) z pojedynczej strony."""
     
     product_data = {
         'name': product_name,
         'url': product_url,
         'price': None,
         'description_snippet': None,
-        'Kolor/Rozmiar': None,  # NOWE POLE
+        'Kolor/Rozmiar': None,
         'last_category': None,
         'image_urls': [] 
     }
     
     # Ustawienie czasu oczekiwania
-    WAIT_TIME = 30 # Zwiększony limit czasu, aby uniknąć TimeoutException
+    WAIT_TIME = 30
 
-    # ----------------------------------
-    # A. EKSTRAKCJA KOLORU/ROZMIARU Z NAZWY (NOWA LOGIKA)
-    # ----------------------------------
+    # Kolor/rozmiar - bierzemy z nazwy, zawsze jest po "-" w nazwie
     try:
-        # Szukamy separatora " - " w nazwie produktu
         separator = " - "
         if separator in product_name:
-            # Dzielimy nazwę i bierzemy wszystko po ostatnim wystąpieniu separatora
-            # Przykład: "Śpiwór puchowy Pajak Radical 16H (205 cm) - red" -> "red"
             variant_info = product_name.split(separator)[-1].strip()
             product_data['Kolor/Rozmiar'] = variant_info
-            
-            # Dodatkowo, jeśli chcesz "wyczyścić" oryginalną nazwę produktu
-            # (aby w name było "Śpiwór puchowy Pajak Radical 16H (205 cm)"),
-            # możesz to zrobić tutaj. Na razie zostawmy oryginalną pełną nazwę w 'name'.
         
     except Exception as e:
         print(f"   Błąd przy ekstrakcji Kolor/Rozmiar z nazwy: {e}")
-        
-    # ----------------------------------
-    
+            
     try:
         driver.get(product_url)
-        
         wait = WebDriverWait(driver, WAIT_TIME)
-        
-        # Czekaj na element, który musi być widoczny: nagłówek produktu (lub podobny)
         wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'h1')))
         
-        # ----------------------------------
-        # B. CENA
-        # ----------------------------------
+        # Cena
         try:
             price_element_css = '.price-wrapper .price' 
             price_element = driver.find_element(By.CSS_SELECTOR, price_element_css)
@@ -228,9 +211,7 @@ def scrape_product_data_selenium(driver, product_url, product_name):
         except NoSuchElementException:
             pass 
             
-        # ----------------------------------
-        # C. KATEGORIA (Breadcrumb)
-        # ----------------------------------
+        # Podkategoria
         try:
             breadcrumb_items = driver.find_elements(By.CSS_SELECTOR, 'ul.items li')
             
@@ -245,9 +226,7 @@ def scrape_product_data_selenium(driver, product_url, product_name):
         except Exception:
             pass 
 
-        # ----------------------------------
-        # D. OPIS (Pierwszy paragraf)
-        # ----------------------------------
+        # Opis
         try:
             desc_container_css = '.product.attribute.description .value'
             desc_container = driver.find_element(By.CSS_SELECTOR, desc_container_css)
@@ -257,9 +236,7 @@ def scrape_product_data_selenium(driver, product_url, product_name):
         except NoSuchElementException:
             pass
 
-        # ----------------------------------
-        # E. ZDJĘCIA (URL-e)
-        # ----------------------------------
+        # Zdjecia - TODO
         # Wymagamy dwóch zdjęć w dużej rozdzielczości.
         try:
             image_elements = driver.find_elements(By.CSS_SELECTOR, '.product-image-container .gallery-placeholder__image')
@@ -310,7 +287,7 @@ def create_categories():
     
     return kategorie
 
-# PĘTLA GŁÓWNA
+# PĘTLA GŁÓWNA - merge z tą na dole
 
 # def main_scraper():
 #     # Sprawdzenie, czy kategorie zostały już pobrane i zapisane.
@@ -365,7 +342,7 @@ def create_categories():
 #     main_scraper()
     
 def main_scraper():
-    # 1. Wczytanie linków do produktów z poprzedniego etapu
+    # Wczytanie linków do produktów z jsona z linkami
     try:
         with open(INPUT_LINKS_FILE, 'r', encoding='utf-8') as f:
             product_links_to_scrape = json.load(f)
@@ -376,7 +353,7 @@ def main_scraper():
 
     all_detailed_data = []
     
-    # 2. Iteracja po produktach, używając nowej sesji na każdy produkt
+    # Iteracja po produktach, używając nowej sesji na każdy produkt 🤡
     for i, product_info in enumerate(product_links_to_scrape):
         product_url = product_info['url']
         product_name = product_info['name']
@@ -396,13 +373,12 @@ def main_scraper():
         finally:
             driver.quit()
             
-            # Wprowadzamy dłuższe, losowe opóźnienie między otwieraniem nowych sesji.
-            sleep_duration = random.uniform(5, 10) 
+            sleep_duration = random.uniform(DELAY_SECONDS, DELAY_SECONDS_MAX) 
             print(f"Czekanie {sleep_duration:.2f}s przed uruchomieniem następnej sesji.")
             time.sleep(sleep_duration)
 
 
-    # 3. Zapis końcowy
+    # Zapis końcowy
     if all_detailed_data:
         os.makedirs('scraper/results', exist_ok=True)
         with open(OUTPUT_DATA_FILE, 'w', encoding='utf-8') as f:
@@ -416,6 +392,4 @@ def main_scraper():
         print("Nie zebrano żadnych szczegółowych danych.")
 
 if __name__ == "__main__":
-    # Możesz usunąć funkcję create_categories z tego skryptu, jeśli jej nie potrzebujesz
-    # create_categories()
     main_scraper()
