@@ -26,10 +26,11 @@ HEADERS = {
     'Referer': MAIN_URL
 }
 
-CATEGORIES_FILE = 'scraper/results/main_categories.json'
-OUTPUT_FILE = 'scraper/results/links_products.json'
-INPUT_LINKS_FILE = 'scraper/results/links_products.json'
-OUTPUT_DATA_FILE = 'scraper/results/detailed_products_data.json'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CATEGORIES_FILE = os.path.join(BASE_DIR, '..', 'results', 'main_categories.json')
+OUTPUT_FILE = os.path.join(BASE_DIR, '..', 'results', 'links_products.json')
+INPUT_LINKS_FILE = os.path.join(BASE_DIR, '..', 'results', 'links_products.json')
+OUTPUT_DATA_FILE = os.path.join(BASE_DIR, '..', 'results', 'detailed_products_data.json')
 MAX_PRODUCTS_PER_CATEGORY = 10
 DELAY_SECONDS = 5
 DELAY_SECONDS_MAX = 8
@@ -41,6 +42,7 @@ chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
+
 
 def initialize_driver():    
     chrome_options.add_experimental_option('excludeSwitches', ['enable-logging']) 
@@ -55,9 +57,9 @@ def initialize_driver():
         print(f"❌ Błąd inicjalizacji sterownika: {e}")
         print("Upewnij się, że masz zainstalowaną przeglądarkę Chrome oraz odpowiedni 'chromedriver' (lub nowsze Selenium).")
         return None
-        
-# POBIERANIE KATEGORII (requests)
 
+
+# POBIERANIE KATEGORII (requests)
 def get_main_categories():
     categories_data = []
 
@@ -105,8 +107,25 @@ def load_categories(file_path):
         print(f"❌ Błąd: Nie znaleziono pliku kategorii: {file_path}. Uruchom najpierw funkcję create_categories.")
         return []
 
-# POBIERANIE PRODUKTU (selenium)
 
+# FUNKCJA ZAPISUJĄCA KATEGORIE
+def create_categories():
+    kategorie = get_main_categories()
+
+    if kategorie:
+        result_dir = os.path.join(BASE_DIR, '..', 'results')
+        os.makedirs(result_dir, exist_ok=True)
+        file_path = os.path.join(BASE_DIR, '..', 'results', 'main_categories.json')
+
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(kategorie, f, indent=4, ensure_ascii=False)
+
+        print(f"\n[CREATE] Dane zostały pomyślnie zapisane do: {file_path}")
+
+    return kategorie
+
+
+# POBIERANIE PRODUKTU (selenium)
 def scrape_product_links_selenium(driver, category_url, category_name):
     
     product_links = []
@@ -166,8 +185,68 @@ def scrape_product_links_selenium(driver, category_url, category_name):
         
     return product_links
 
-# POBIERANIE DANYCH PRODUKTU (selenium)
 
+# POBIERANIE CENY PRODUKTU (selenium
+def scrape_product_data_price(driver):
+    price_element_css = '.price-wrapper .price'
+    price_element = driver.find_element(By.CSS_SELECTOR, price_element_css)
+    price_text = price_element.text.strip().replace('\xa0', ' ').replace(',', '.')
+
+    # Pobieramy cenę z data-price-amount, jeśli element nadrzędny jest dostępny
+    price_amount = price_element.find_element(By.XPATH, '..').get_attribute('data-price-amount')
+
+    if price_amount:
+        return price_amount
+    else:
+        return price_text
+
+
+# POBIERANIE PODKATEGORII PRODUKTU (selenium)
+def scrape_product_data_subcategory(driver):
+    breadcrumb_items = driver.find_elements(By.CSS_SELECTOR, 'ul.items li')
+
+    # Ostatnia kategoria to przedostatni element (ostatni to nazwa produktu)
+    if len(breadcrumb_items) >= 2:
+        # Element <li> zawierający link do kategorii
+        last_category_li = breadcrumb_items[-2]
+        # Wewnątrz tego <li> szukamy linku <a>, aby pobrać tekst
+        last_category_a = last_category_li.find_element(By.TAG_NAME, 'a')
+        category_name = last_category_a.text.strip()
+        return category_name
+
+    return None
+
+
+# POBIERANIE OPISU PRODUKTU (selenium)
+def scrape_product_data_description(driver):
+    desc_container_css = '.product.attribute.description .value'
+    desc_container = driver.find_element(By.CSS_SELECTOR, desc_container_css)
+
+    first_paragraph = desc_container.find_element(By.TAG_NAME, 'p')
+    return first_paragraph.text.strip()
+
+
+# ZDJECIA - TODO
+def scrape_product_data_image_url(driver):
+    image_elements = driver.find_elements(By.CSS_SELECTOR, '.product-image-container .gallery-placeholder__image')
+
+    if not image_elements:
+        image_elements = driver.find_elements(By.CSS_SELECTOR, '.fotorama__img')
+
+    urls = set()
+    for img in image_elements:
+        url = img.get_attribute('src') or img.get_attribute('data-src')
+
+        if url:
+            cleaned_url = url.split('?')[0]
+            urls.add(cleaned_url)
+            if len(urls) >= 2:
+                break
+
+    return list(urls)
+
+
+# POBIERANIE DANYCH PRODUKTU (selenium)
 def scrape_product_data_selenium(driver, product_url, product_name):
     
     product_data = {
@@ -191,73 +270,34 @@ def scrape_product_data_selenium(driver, product_url, product_name):
             product_data['Kolor/Rozmiar'] = variant_info
         
     except Exception as e:
-        print(f"   Błąd przy ekstrakcji Kolor/Rozmiar z nazwy: {e}")
+        print(f"  ❌ Błąd przy ekstrakcji Kolor/Rozmiar z nazwy: {e}")
             
     try:
         driver.get(product_url)
         wait = WebDriverWait(driver, WAIT_TIME)
         wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'h1')))
-        
-        # Cena
+
         try:
-            price_element_css = '.price-wrapper .price' 
-            price_element = driver.find_element(By.CSS_SELECTOR, price_element_css)
-            price_text = price_element.text.strip().replace('\xa0', ' ').replace(',', '.') 
-            
-            # Pobieramy cenę z data-price-amount, jeśli element nadrzędny jest dostępny
-            price_amount = price_element.find_element(By.XPATH, '..').get_attribute('data-price-amount')
-            
-            product_data['price'] = price_amount if price_amount else price_text
+            product_data['price'] = scrape_product_data_price(driver)
         except NoSuchElementException:
             pass 
-            
-        # Podkategoria
+
         try:
-            breadcrumb_items = driver.find_elements(By.CSS_SELECTOR, 'ul.items li')
-            
-            # Ostatnia kategoria to przedostatni element (ostatni to nazwa produktu)
-            if len(breadcrumb_items) >= 2:
-                # Element <li> zawierający link do kategorii
-                last_category_li = breadcrumb_items[-2] 
-                # Wewnątrz tego <li> szukamy linku <a>, aby pobrać tekst
-                last_category_a = last_category_li.find_element(By.TAG_NAME, 'a')
-                category_name = last_category_a.text.strip()
-                product_data['last_category'] = category_name
-        except Exception:
+            product_data['last_category'] = scrape_product_data_subcategory(driver)
+        except Exception: # tez NoSuchElementException?
             pass 
 
-        # Opis
         try:
-            desc_container_css = '.product.attribute.description .value'
-            desc_container = driver.find_element(By.CSS_SELECTOR, desc_container_css)
-            
-            first_paragraph = desc_container.find_element(By.TAG_NAME, 'p')
-            product_data['description_snippet'] = first_paragraph.text.strip()
+            product_data['description_snippet'] = scrape_product_data_description(driver)
         except NoSuchElementException:
             pass
 
         # Zdjecia - TODO
         # Wymagamy dwóch zdjęć w dużej rozdzielczości.
         try:
-            image_elements = driver.find_elements(By.CSS_SELECTOR, '.product-image-container .gallery-placeholder__image')
-            
-            if not image_elements:
-                 image_elements = driver.find_elements(By.CSS_SELECTOR, '.fotorama__img')
-
-            urls = set()
-            for img in image_elements:
-                url = img.get_attribute('src') or img.get_attribute('data-src')
-                
-                if url:
-                    cleaned_url = url.split('?')[0]
-                    urls.add(cleaned_url)
-                    if len(urls) >= 2:
-                        break
-            
-            product_data['image_urls'] = list(urls)
-            
+            product_data['image_urls'] = scrape_product_data_image_url(driver)
         except Exception as e:
-            print(f"   Wystąpił błąd przy pobieraniu URL-i zdjęć: {e}")
+            print(f"  ❌ Wystąpił błąd przy pobieraniu URL-i zdjęć: {e}")
             
         print(f"   ✅ Zebrano dane: Cena: {product_data['price']}, Kolor/Rozmiar: {product_data['Kolor/Rozmiar']}")
         
@@ -271,21 +311,6 @@ def scrape_product_data_selenium(driver, product_url, product_name):
         
     return product_data
 
-# FUNKCJA ZAPISUJĄCA KATEGORIE
-
-def create_categories():
-    kategorie = get_main_categories()
-
-    if kategorie:
-        os.makedirs('scraper/results', exist_ok=True)
-        file_path = 'scraper/results/main_categories.json'
-        
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(kategorie, f, indent=4, ensure_ascii=False)
-        
-        print(f"\n[CREATE] Dane zostały pomyślnie zapisane do: {file_path}")
-    
-    return kategorie
 
 # PĘTLA GŁÓWNA - merge z tą na dole
 
@@ -298,29 +323,29 @@ def create_categories():
 #              return
 
 #     all_product_links = []
-    
+
 #     # Iteracja po kategoriach i pobranie linków
 #     for i, kategoria in enumerate(kategorie):
 #         print(f"\n======== ROZPOCZYNAM KATEGORIĘ {i + 1}/{len(kategorie)} ========")
-        
+
 #         # Inicjalizacja sterownika przed każdą kategorią
 #         driver = initialize_driver()
 #         if not driver:
 #             print("Nie można zainicjalizować sterownika, przerywam.")
-#             break 
-            
+#             break
+
 #         try:
 #             # Scrapowanie linków
 #             links = scrape_product_links_selenium(driver, kategoria['url'], kategoria['name'])
 #             all_product_links.extend(links)
-            
+
 #         finally:
 #             # Zamykamy przeglądarkę po zakończeniu scrapowania tej kategorii
 #             driver.quit()
 #             print("Zakończono sesję przeglądarki.")
-            
+
 #             # 🤡
-#             sleep_duration = random.uniform(DELAY_SECONDS, DELAY_SECONDS_MAX) 
+#             sleep_duration = random.uniform(DELAY_SECONDS, DELAY_SECONDS_MAX)
 #             print(f"Czekanie {sleep_duration:.2f}s przed uruchomieniem następnej sesji.")
 #             time.sleep(sleep_duration)
 
@@ -330,7 +355,7 @@ def create_categories():
 #         os.makedirs('scraper/results', exist_ok=True)
 #         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
 #             json.dump(all_product_links, f, indent=4, ensure_ascii=False)
-        
+
 #         print(f"\n==========================================")
 #         print(f"Sukces! Zebrano łącznie {len(all_product_links)} linków produktowych.")
 #         print(f"Zapisano w: {OUTPUT_FILE}")
@@ -340,7 +365,54 @@ def create_categories():
 
 # if __name__ == "__main__":
 #     main_scraper()
-    
+
+
+# Iteracja po produktach, używając nowej sesji na każdy produkt 🤡
+def get_detailed_data(product_links_to_scrape):
+    all_detailed_data = []
+
+    for i, product_info in enumerate(product_links_to_scrape):
+        product_url = product_info['url']
+        product_name = product_info['name']
+
+        print(f"\n======== ROZPOCZYNAM PRODUKT {i + 1}/{len(product_links_to_scrape)}: {product_name} ========")
+
+        driver = initialize_driver()
+        if not driver:
+            print("Nie można zainicjalizować sterownika, przerywam.")
+            break
+
+        try:
+            # Scrapowanie szczegółów produktu
+            data = scrape_product_data_selenium(driver, product_url, product_name)
+            all_detailed_data.append(data)
+
+        finally:
+            driver.quit()
+
+            sleep_duration = random.uniform(DELAY_SECONDS, DELAY_SECONDS_MAX)
+            print(f"Czekanie {sleep_duration:.2f}s przed uruchomieniem następnej sesji.")
+            time.sleep(sleep_duration)
+
+    return all_detailed_data
+
+
+def save_data(all_detailed_data):
+    try:
+        result_dir = os.path.join(BASE_DIR, '..', 'results')
+        os.makedirs(result_dir, exist_ok=True)
+        with open(OUTPUT_DATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(all_detailed_data, f, indent=4, ensure_ascii=False)
+
+        print(f"\n==========================================")
+        print(f"Sukces! Zebrano dane dla {len(all_detailed_data)} produktów.")
+        print(f"Zapisano w: {OUTPUT_DATA_FILE}")
+        print(f"==========================================")
+    except Exception as e:
+        print(f"\n==========================================")
+        print(f"❌ Błąd przy zapisie: {e}")
+
+
 def main_scraper():
     # Wczytanie linków do produktów z jsona z linkami
     try:
@@ -351,45 +423,14 @@ def main_scraper():
         print(f"❌ Błąd: Nie znaleziono pliku linków: {INPUT_LINKS_FILE}. Uruchom najpierw etap zbierania linków.")
         return
 
-    all_detailed_data = []
-    
-    # Iteracja po produktach, używając nowej sesji na każdy produkt 🤡
-    for i, product_info in enumerate(product_links_to_scrape):
-        product_url = product_info['url']
-        product_name = product_info['name']
-        
-        print(f"\n======== ROZPOCZYNAM PRODUKT {i + 1}/{len(product_links_to_scrape)}: {product_name} ========")
-        
-        driver = initialize_driver()
-        if not driver:
-            print("Nie można zainicjalizować sterownika, przerywam.")
-            break 
-            
-        try:
-            # Scrapowanie szczegółów produktu
-            data = scrape_product_data_selenium(driver, product_url, product_name)
-            all_detailed_data.append(data)
-            
-        finally:
-            driver.quit()
-            
-            sleep_duration = random.uniform(DELAY_SECONDS, DELAY_SECONDS_MAX) 
-            print(f"Czekanie {sleep_duration:.2f}s przed uruchomieniem następnej sesji.")
-            time.sleep(sleep_duration)
-
+    all_detailed_data = get_detailed_data(product_links_to_scrape)
 
     # Zapis końcowy
     if all_detailed_data:
-        os.makedirs('scraper/results', exist_ok=True)
-        with open(OUTPUT_DATA_FILE, 'w', encoding='utf-8') as f:
-            json.dump(all_detailed_data, f, indent=4, ensure_ascii=False)
-        
-        print(f"\n==========================================")
-        print(f"Sukces! Zebrano dane dla {len(all_detailed_data)} produktów.")
-        print(f"Zapisano w: {OUTPUT_DATA_FILE}")
-        print(f"==========================================")
+        save_data(all_detailed_data)
     else:
         print("Nie zebrano żadnych szczegółowych danych.")
+
 
 if __name__ == "__main__":
     main_scraper()
