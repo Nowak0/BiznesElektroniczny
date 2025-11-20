@@ -62,14 +62,14 @@
           {if $shop.logo_details}
             {if $page.page_name == 'index'}
               <h1>
-                <a href="http://localhost:8080/pl/">
-                  <picture><source srcset="https://monocerus.pl/img/logo-1678022791.webp" type="image/webp"><img class="logo img-fluid" src="https://monocerus.pl/img/logo-1678022791.jpg" alt="Monocerus sklep internetowy" width="640" height="249"></picture>
+                <a href="{$urls.base_url}">
+                  {renderLogo}
                 </a>
               </h1>
             {else}
-              <a href="http://localhost:8080/pl/">
-                  <picture><source srcset="https://monocerus.pl/img/logo-1678022791.webp" type="image/webp"><img class="logo img-fluid" src="https://monocerus.pl/img/logo-1678022791.jpg" alt="Monocerus sklep internetowy" width="640" height="249"></picture>
-                </a>
+              <a href="{$urls.base_url}">
+                {renderLogo}
+              </a>
             {/if}
           {/if}
         </div>
