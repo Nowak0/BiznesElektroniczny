@@ -38,6 +38,7 @@ services:
       - prestashop
     volumes:
       - ./themes/osiema:/var/www/html/themes/osiema
+      - ./themes/child_classic:/var/www/html/themes/child_classic
       - psdata:/var/www/html
 
 networks:
