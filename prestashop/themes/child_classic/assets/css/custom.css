@@ -2,3 +2,131 @@
  * Custom code goes here.
  * A template should always ship with an empty custom.css
  */
+#header .header-top {
+    /* max-height: 50px; */
+    border-bottom: #f6f6f6 2px solid;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(246, 246, 246);
+}
+
+.abcRioButton {
+    border-radius: 1px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .25);
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: background-color .218s, border-color .218s, box-shadow .218s;
+    transition: background-color .218s, border-color .218s, box-shadow .218s;
+    -webkit-user-select: none;
+    -webkit-appearance: none;
+    background-color: #fff;
+    background-image: none;
+    color: #262626;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: auto;
+}
+
+.abcRioButtonBlue {
+    background-color: #4285f4;
+    border: none;
+    color: #fff;
+}
+.abcRioButton.abcRioButtonBlue {
+    transform: scale(0.9);
+}
+
+.abcRioButtonContentWrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.abcRioButtonBlue .abcRioButtonContentWrapper {
+    border: 1px solid transparent;
+}
+
+.abcRioButtonBlue .abcRioButtonIcon {
+    background-color: #fff;
+    border-radius: 1px;
+    width: 48px;
+}
+
+.abcRioButtonContents {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .21px;
+    margin-left: 6px;
+    margin-right: 6px;
+    vertical-align: top;
+    text-shadow: 1px 1px 0 #41577d;
+}
+
+.abcRioButtonSvg {
+    display: block;
+}
+
+.layout_layout1 .ets_mm_megamenu_content {
+    border-bottom: 1px solid #e7e7e7;
+    background: linear-gradient(#FFFFFF, #F2F2F2) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    background: -webkit-linear-gradient(#FFFFFF, #F2F2F2) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    background: -o-linear-gradient(#FFFFFF, #F2F2F2) repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+
+.ybc-menu-toggle {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px;
+    padding: 15px;
+    text-transform: uppercase;
+    width: 100%;
+    display: none;
+    cursor: pointer;
+    color: #333;
+}
+
+.container {
+    width: 1140px;
+    max-width: 100%;
+    padding: 0;
+}
+
+.ets_mm_megamenu_content .ets_mm_megamenu_content_content {
+    display: flex;
+    display: -o-flex;
+    display: -ms-flex;
+    display: -moz-flex;
+    display: -webkit-flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mm_extra_item {
+    float: right;
+    padding-right: 10px;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    display: -o-flex;
+    display: -ms-flex;
+    display: -moz-flex;
+    display: -webkit-flex;
+}
+
+.mm_extra_item>div {
+    float: left;
+    margin-left: 10px;
+    padding: 0 !important;
+    width: auto;
+    white-space: nowrap;
+}
+
+#header .layout_layout1:not(.ybc_vertical_menu) .mm_menus_li > a, .layout_layout1 .ybc-menu-vertical-button, .layout_layout1 .mm_extra_item * {
+    color: #484848;
+}
