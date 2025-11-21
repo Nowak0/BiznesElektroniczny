@@ -24,6 +24,9 @@ global_settings:
         - ps_shoppingcart
       displayFooterBefore:
         - ps_socialfollow
+      displayHome:
+        - ps_imageslider
+        - ps_featuredproducts
 
   image_types:
     cart_default:
