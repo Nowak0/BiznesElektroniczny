@@ -1,1 +1,0 @@
-<picture><source srcset="https://monocerus.pl/img/logo-1678022791.webp" type="image/webp"><img class="logo img-fluid" src="https://monocerus.pl/img/logo-1678022791.jpg" alt="Monocerus sklep internetowy" width="640" height="249"></picture>

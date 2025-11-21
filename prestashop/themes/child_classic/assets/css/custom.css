@@ -59,7 +59,7 @@
 
 .abcRioButtonContents {
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: .21px;
     margin-left: 6px;
     margin-right: 6px;
@@ -147,6 +147,7 @@
 
 .top-menu .category {
     border-right: 1px solid #e7e7e7;
+    text-transform: uppercase;
 }
 
 .top-menu .category:first-child {
@@ -175,6 +176,13 @@
 
 .top-menu .category li {
     border-right: none;
+}
+
+.top-menu .category li a {
+    text-transform: none !important;
+}
+
+.top-menu .category li a:hover {
     border-top: none;
 }
 
@@ -183,7 +191,16 @@
 }
 
 #index-page svg {
-    /* transform: scale(0.6); */
     fill: #484848;
     margin: -5px 3px 0px 5px;
+}
+
+#block-reassurance {
+    padding: 10px 15px 0 15px;
+    text-align: center;
+    width: 100%;
+}
+
+#block-reassurance .block-title {
+    font-weight: 700;
 }
