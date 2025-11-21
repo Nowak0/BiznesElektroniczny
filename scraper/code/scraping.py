@@ -14,10 +14,23 @@ RESULTS_PRODUCTSLINKS_DIR = os.path.join(BASE_DIR, '..', 'results', 'products_li
 RESULTS_PRODUCT_DETAILED_DIR = os.path.join(BASE_DIR, '..', 'results', 'product_detail.json')
 
 MAX_PRODUCTS_PP = 7
+SLEEP_MIN = 3
+SLEEP_MAX = 5
 
 header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
 }
+   
+def sanitize_url_for_medium(url):
+    if not url:
+        return ""
+
+    return re.sub(r'(\d+)-[a-z_]*default/', r'\1-medium_default/', url)
+
+def sanitize_filename(name):
+    name = re.sub(r'[^\w\s-]', '', name).strip()
+    name = re.sub(r'[-\s]+', '_', name)
+    return name[:50]
        
 def build_subcategories(main_li):    
     
@@ -144,9 +157,20 @@ def scrape_category_products(category_url):
         data['kategorie'] = category_list_data
         
         if len(products_list) >= MAX_PRODUCTS_PP:
-            return products_list
+            break
         
         products_list.append(data)
+        
+    print(f"      -> Rozpoczęcie szczegółowego scrapowania {len(products_list)} produktów...")
+    
+    for i, product in enumerate(products_list):
+        if product.get('link'):
+            print(f"         Przetwarzanie produktu {i + 1}/{len(products_list)}")
+                 
+            details = scrape_single_product_details(product['link'])
+            product.update(details)
+            
+            sleep(SLEEP_MIN)
     
     return products_list
 
@@ -186,6 +210,79 @@ def extract_breadcrumbs_data(soup):
     
     return category_names[:3]
 
+def download_image_to_local_path(image_url, product_id, image_index):
+    os.makedirs(PHOTOS_DIR, exist_ok=True)
+    
+    if not image_url:
+        return ""
+    
+    filename = f"{product_id}_photo_{image_index + 1}.jpg"
+    local_path = os.path.join(PHOTOS_DIR, filename)
+    
+    try:
+        response = requests.get(image_url, timeout=10)
+        if response.status_code == 200:
+            with open(local_path, 'wb') as f:
+                f.write(response.content)
+            return filename
+        else:
+            print(f"Nie udało się pobrać zdjęcia: {image_url}")
+            return f"Błąd HTTP {response.status_code}"
+    except requests.RequestException:
+        return "Błąd pobierania"
+
+    return filename
+
+def scrape_single_product_details(product_url):
+    details = {}
+    
+    try:
+        response = requests.get(product_url, timeout=10)
+        response.raise_for_status()
+    except requests.exceptions.RequestException:
+        return details
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    product_name_el = soup.select_one('h1.h1')
+    
+    if product_name_el:
+        raw_name = product_name_el.get_text(strip=True)
+        file_identifier = sanitize_filename(raw_name)
+    else:
+        file_identifier = 'unknown'
+
+    image_links = []
+    thumb_containers = soup.select('ul.product-images.js-qv-product-images li.thumb-container')
+    
+    for i, li in enumerate(thumb_containers[:2]):
+        picture_tag = li.select_one('.thumb')
+        if picture_tag:
+            medium_src = picture_tag.get('data-image-medium-src')
+        
+            if medium_src:
+                final_url = medium_src
+                local_path = download_image_to_local_path(final_url, file_identifier, i)
+                
+                details[f'photo_{i+1}'] = local_path
+                image_links.append(final_url)
+            
+    details['photo_urls'] = image_links
+
+    description_full_el = soup.select_one('div.product-information')
+    if description_full_el:
+        details['opis_html'] = str(description_full_el) 
+    else:
+        details['opis_html'] = None
+        
+    tabs_el = soup.select_one('div.tabs')
+    if tabs_el:
+        details['szczegoly_html'] = str(tabs_el)
+    else:
+        details['szczegoly_html'] = None
+    
+    return details
+
 def main():
     # kategorie = build_categories() 
         
@@ -201,9 +298,9 @@ def main():
         products_from_category = scrape_category_products(link)
         all_products_data.extend(products_from_category)
         
-        sleep(1)
+        sleep(SLEEP_MAX)
         
-        if i >= 3:
+        if i >= 4:
             break
         
     with open(RESULTS_PRODUCTSLINKS_DIR, 'w', encoding='utf-8') as f:
