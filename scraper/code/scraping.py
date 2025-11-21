@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import re
 from bs4 import BeautifulSoup
 from time import sleep
 
@@ -12,66 +13,11 @@ RESULTS_CATEGORIES_DIR = os.path.join(BASE_DIR, '..', 'results', 'categories.jso
 RESULTS_PRODUCTSLINKS_DIR = os.path.join(BASE_DIR, '..', 'results', 'products_links.json')
 RESULTS_PRODUCT_DETAILED_DIR = os.path.join(BASE_DIR, '..', 'results', 'product_detail.json')
 
+MAX_PRODUCTS_PP = 7
+
 header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
 }
-
-def get_categories():
-    
-    results = []
-    
-    categories = {
-        'category': None,
-        'subcategories': []
-    }
-
-    print(f'Pobieranie ze strony: {MAIN_URL}')
-    
-    try:
-        response = requests.get(MAIN_URL, headers=header, timeout=10)
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        main_menu = soup.find('ul', class_="category-sub-menu")
-        if not main_menu:
-            print(f"Błąd: Nie znaleziono elementu za pomocą selektora. Sprawdź poprawność selektora.")
-            return []
-        
-        all_main_lis = main_menu.select('li[data-depth="0"]')
-    
-        for li in all_main_lis:
-            
-            main_link = li.select_one('a:not([class])')
-            if main_link:
-                results.append({
-                    'Poziom': 0,
-                    'Typ': 'Kategoria Główna',
-                    'Nazwa': main_link.get_text(strip=True),
-                    'Link': main_link.get('href')
-                })
-
-            # B. Podkategorie (<a> z klasą 'category-sub-link') wewnątrz bieżącego <li>
-            sub_category_links = li.select('a.category-sub-link')
-            
-            for sub_link in sub_category_links:
-                parent_li = sub_link.find_parent('li')
-                depth = parent_li.get('data-depth') if parent_li else 'N/A'
-                
-                results.append({
-                    'Poziom': int(depth) if str(depth).isdigit() else depth,
-                    'Typ': 'Podkategoria',
-                    'Nazwa': sub_link.get_text(strip=True),
-                    'Link': sub_link.get('href')
-                })
-                    
-        return results
-                                
-    except Exception as e:
-        print(f'Błąd: {e}')
-        
-    finally:
-        sleep(1)
        
 def build_subcategories(main_li):    
     
@@ -92,10 +38,8 @@ def build_subcategories(main_li):
         sub_menu_ul = li.find('ul', class_='category-sub-menu')
         
         if sub_menu_ul:
-            # Znajdujemy wszystkie <li> na dowolnym poziomie (1, 2, ...)
             all_sub_lis = sub_menu_ul.find_all('li', recursive=False)
             
-            # Funkcja pomocnicza do rekurencyjnego przetwarzania podkategorii
             def process_sub_list(parent_li):
                 link_tag = parent_li.select_one('a.category-sub-link')
                 
@@ -150,11 +94,120 @@ def build_categories():
     
     return None
        
+def extract_product_data(product_html_block):
+    soup = BeautifulSoup(str(product_html_block), 'html.parser')
+    
+    product_data = {}
+
+    title_element = soup.select_one('h2.product-title a')
+    if title_element:
+        product_data['name'] = title_element.get_text(strip=True)
+        product_data['link'] = title_element.get('href')
+    else:
+        thumbnail_link = soup.select_one('a.product-thumbnail')
+        if thumbnail_link:
+             product_data['link'] = thumbnail_link.get('href')
+             product_data['name'] = soup.select_one('article').get('data-id-product') # Jeśli nie ma nazwy, użyj ID
+
+    price_element = soup.select_one('span.price')
+    if price_element:
+        price_text = price_element.get_text(strip=True)
+        clean_price = re.sub(r'[^\d,]', '', price_text).replace(',', '.')
+        product_data['price'] = clean_price
+    else:
+        product_data['price'] = None
+
+    return product_data
+
+def scrape_category_products(category_url):
+    products_list = []
+    category_list_data = []
+    
+    try:
+        response = requests.get(category_url, timeout=15)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Błąd podczas pobierania strony {category_url}: {e}")
+        return []
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    product_containers = soup.select('div.js-product.product')
+    
+    category_list_data = extract_breadcrumbs_data(soup)
+    
+    if not product_containers:
+        print(f"Brak produktów w kategorii: {category_url}")
+        return []
+
+    for container in product_containers:
+        data = extract_product_data(container)
+        data['kategorie'] = category_list_data
+        
+        if len(products_list) >= MAX_PRODUCTS_PP:
+            return products_list
+        
+        products_list.append(data)
+    
+    return products_list
+
+def find_deepest_links(category_node, deepest_links):
+    if not category_node.get('podkategorie'):
+        deepest_links.append(category_node['link'])
+        return
+    
+    for sub_category in category_node['podkategorie']:
+        find_deepest_links(sub_category, deepest_links)
+
+def load_json_and_find_links(json_filepath):
+
+    try:
+        with open(json_filepath, 'r', encoding='utf-8') as f:
+            categories_tree = json.load(f)
+    except FileNotFoundError:
+        print(f"Błąd: Nie znaleziono pliku {json_filepath}.")
+        return []
+    
+    if not isinstance(categories_tree, list):
+         categories_tree = [categories_tree] 
+
+    deepest_links = []
+    
+    for main_category in categories_tree:
+        find_deepest_links(main_category, deepest_links)
+    
+    return list(set(deepest_links))
+
+def extract_breadcrumbs_data(soup):
+    breadcrumbs_list = soup.select('nav.breadcrumb ol li')
+    
+    category_names = [
+        li.get_text(strip=True) for li in breadcrumbs_list if li.get_text(strip=True) != 'Strona główna'
+    ]
+    
+    return category_names[:3]
+
 def main():
-    kategorie = build_categories() 
+    # kategorie = build_categories() 
         
-    with open(RESULTS_CATEGORIES_DIR, 'w', encoding='utf-8') as f:
-        json.dump(kategorie, f, indent=4, ensure_ascii=False)
+    # with open(RESULTS_CATEGORIES_DIR, 'w', encoding='utf-8') as f:
+    #     json.dump(kategorie, f, indent=4, ensure_ascii=False)
+
+    deepest_links = load_json_and_find_links(RESULTS_CATEGORIES_DIR)
+    
+    all_products_data = []
+    
+    for i, link in enumerate(deepest_links):
+        print(f"\n--- Przetwarzanie linku {i + 1}/{len(deepest_links)}: {link} ---")
+        products_from_category = scrape_category_products(link)
+        all_products_data.extend(products_from_category)
         
+        sleep(1)
+        
+        if i >= 3:
+            break
+        
+    with open(RESULTS_PRODUCTSLINKS_DIR, 'w', encoding='utf-8') as f:
+        json.dump(all_products_data, f, indent=4, ensure_ascii=False)    
+            
 if __name__ == "__main__":
     main()
