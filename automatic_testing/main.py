@@ -18,26 +18,28 @@ def category_page(driver, home):
     categories = [("", "https://monocerus.pl/112-artist-resin"), ("", "https://monocerus.pl/2-glowna")]
     total_added = []
 
-    # undone_adds = 0
-    # for name, url in categories:
-    #     cat_page = CategoryPage(driver)
-    #     cat_page.open(url)
-    #     added, undone_adds = cat_page.add_first_n_products_to_cart(n=5, undone_adds=undone_adds)
-    #     total_added.append(added)
-    #
-    # print(f"Added products: {total_added}")
+    undone_adds = 0
+    for name, url in categories:
+        cat_page = CategoryPage(driver)
+        cat_page.open(url)
+        added, undone_adds = cat_page.add_first_n_products_to_cart(n=5, undone_adds=undone_adds)
+        total_added.append(added)
+
+    print(f"Added products: {total_added}")
 
     home.open(BASE_URL)
-    search_text = "kon"
+    search_text = "koń"
     home.search(search_text)
     cat_page = CategoryPage(driver)
     results = cat_page.list_product_links()
 
-    if results:
-        product = random.choice(results)
-        cat_page.driver.get(product["url"])
-        cat_page.add_first_n_products_to_cart(n=1)
-        print(f"Added product: {product}")
+    if not results:
+        return
+
+    product = random.choice(results)
+    cat_page.driver.get(product["url"])
+    cat_page.add_first_n_products_to_cart(n=1)
+    print(f"Added product: {product}")
 
 
 def cart_page(driver):

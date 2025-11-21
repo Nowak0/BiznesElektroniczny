@@ -10,6 +10,7 @@ class CategoryPage(BasePage):
     PRODUCT_LINK = (By.CSS_SELECTOR, "a.thumbnail.product-thumbnail")
     ADD_TO_CART_BUTTON = (By.CSS_SELECTOR, "button.add-to-cart")
 
+
     def list_product_links(self, max_items=10):
         items = self.driver.find_elements(*self.PRODUCT_ITEMS)
         links = []
@@ -42,6 +43,6 @@ class CategoryPage(BasePage):
                 continue
 
             self.safe_click(self.ADD_TO_CART_BUTTON, timeout=2)
-            added.append({"name": p["name"], "url": p["url"], "qty": quantity})
+            added.append({"name": p["name"], "url": p["url"], "quantity": quantity})
             short_delay()
         return added, undone_adds

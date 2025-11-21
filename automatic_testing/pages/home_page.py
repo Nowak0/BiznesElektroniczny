@@ -2,6 +2,7 @@ import random
 from operator import truediv
 
 from selenium.common import TimeoutException
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from utils import short_delay
@@ -11,7 +12,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 class HomePage(BasePage):
     COOKIE_ACCEPT = (By.CSS_SELECTOR, "button.x13eucookies__btn--accept-all")
     SEARCH_INPUT = (By.CSS_SELECTOR, "input[name='s']")
-    SEARCH_SUBMIT = (By.CSS_SELECTOR, "button[type='submit'].search-btn")
     CATEGORY_LINKS = (By.CSS_SELECTOR, ".block-categories a")
 
 
@@ -30,7 +30,7 @@ class HomePage(BasePage):
         element.clear()
         element.send_keys(text)
         short_delay()
-        self.safe_click(self.SEARCH_SUBMIT)
+        element.send_keys(Keys.ENTER)
 
 
     def pick_category_links(self, limit=2):
