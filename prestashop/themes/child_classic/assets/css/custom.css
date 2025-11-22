@@ -10,6 +10,11 @@
     border-bottom-color: rgb(246, 246, 246);
 }
 
+.abcRioButton.abcRioButtonBlue {
+    transform: scale(0.8);
+    transform-origin: left;
+}
+
 .abcRioButton {
     border-radius: 1px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .25);
@@ -37,9 +42,6 @@
     border: none;
     color: #fff;
 }
-.abcRioButton.abcRioButtonBlue {
-    transform: scale(0.9);
-}
 
 .abcRioButtonContentWrapper {
     height: 100%;
@@ -59,7 +61,7 @@
 
 .abcRioButtonContents {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: .21px;
     margin-left: 6px;
     margin-right: 6px;
@@ -207,6 +209,29 @@
     font-weight: 700;
 }
 
+#block-reassurance.cart .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+#block-reassurance.cart .row .block-title{
+    font-weight: 400;
+    font-size: 15px;
+}
+
+#block-reassurance.cart .row .block-icon svg{
+    width: 35px;
+    height: auto;
+    transform-origin: left;
+    display: block;
+}
+
+#block-reassurance.cart .row .block-icon{
+    margin-right: 5px;
+    padding-top: 5px;
+}
+
 .x13eucookies__icon-mockup, .x13eucookies__icon {
     padding: 0 !important;
     background: transparent;
@@ -248,4 +273,8 @@
         float: left;
         width: 75%;
     }
+}
+
+#content-wrapper.full-col {
+    width: 100%;
 }
