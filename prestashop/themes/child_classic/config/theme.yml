@@ -27,6 +27,8 @@ global_settings:
       displayHome:
         - ps_imageslider
         - ps_featuredproducts
+      displayReassurance:
+        - blockreassurance
 
   image_types:
     cart_default:
