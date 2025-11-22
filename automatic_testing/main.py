@@ -1,3 +1,5 @@
+from _pyrepl.commands import home
+
 from driver import create_driver
 import time, random
 
@@ -14,18 +16,18 @@ DOWNLOAD_DIR = "./downloads"
 
 
 def category_page(driver, home):
-    categories = home.pick_category_links()
-    categories = [("", "https://monocerus.pl/112-artist-resin"), ("", "https://monocerus.pl/2-glowna")]
+    # categories = home.pick_category_links()
+    categories = [("", "https://monocerus.pl/5-collecta"), ("", "https://monocerus.pl/35-papo")]
     total_added = []
 
-    undone_adds = 0
-    for name, url in categories:
-        cat_page = CategoryPage(driver)
-        cat_page.open(url)
-        added, undone_adds = cat_page.add_first_n_products_to_cart(n=5, undone_adds=undone_adds)
-        total_added.append(added)
-
-    print(f"Added products: {total_added}")
+    # undone_adds = 0
+    # for name, url in categories:
+    #     cat_page = CategoryPage(driver)
+    #     cat_page.open(url)
+    #     added, undone_adds = cat_page.add_first_n_products_to_cart(n=5, undone_adds=undone_adds)
+    #     total_added.append(added)
+    #
+    # print(f"Added products: {total_added}")
 
     home.open(BASE_URL)
     search_text = "koń"
@@ -36,28 +38,36 @@ def category_page(driver, home):
     if not results:
         return
 
-    product = random.choice(results)
-    cat_page.driver.get(product["url"])
-    cat_page.add_first_n_products_to_cart(n=1)
-    print(f"Added product: {product}")
+    result = False
+    product = ""
+    while not result:
+        product = random.choice(results)
+        result = cat_page.add_given_product_to_cart(product["url"])
+
+    print(f"Added product: {product}\n\n")
 
 
 def cart_page(driver):
     cart = CartPage(driver)
-    cart.open(BASE_URL)
-    removed = cart.remove_n_items(n=2)
-    print(f"Removed {removed} products from the cart")
+    cart.open_cart()
+    removed = cart.remove_n_items(n=3)
+    print(f"Removed {removed} products from the cart\n\n")
 
 
-def account_page(driver):
+def account_page(driver, type="register"):
     account = AccountPage(driver)
-    user_data = account.register_new_user()
-    print(f"Registered user: {user_data}")
+
+    if type == "register":
+        user_data = account.register_new_user()
+    else:
+        user_data = account.login(email="psscarpeta@gmail.com", password="qwerty65")
+    print(f"Registered user: {user_data}\n\n")
 
 
 def checkout_page(driver):
     checkout = CheckoutPage(driver)
-    checkout.select_address()
+    checkout.open_page()
+    checkout.select_delivery_info(address="Testowa 1", postcode="30-230", city="Testowanie", phone="123456789")
     checkout.choose_carrier()
     checkout.choose_payment()
     checkout.accept_terms()
@@ -88,8 +98,8 @@ def main():
 
         category_page(driver, home)
         # cart_page(driver)
-        # account_page(driver)
-        # checkout_page(driver)
+        account_page(driver, "login")
+        checkout_page(driver)
         # order_history_page(driver)
 
     finally:

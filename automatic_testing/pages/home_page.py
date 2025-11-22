@@ -31,6 +31,7 @@ class HomePage(BasePage):
         element.send_keys(text)
         short_delay()
         element.send_keys(Keys.ENTER)
+        short_delay(1.5,2)
 
 
     def pick_category_links(self, limit=2):
