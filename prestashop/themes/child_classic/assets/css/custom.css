@@ -262,19 +262,29 @@
 }
 
 @media (min-width: 576px) {
-    #content-wrapper {
+    #content-wrapper.mid-col {
         float: left;
         width: 66.66667%;
     }
 }
 
 @media (min-width: 768px) {
-    #content-wrapper {
+    #content-wrapper.mid-col {
         float: left;
         width: 75%;
     }
 }
 
-#content-wrapper.full-col {
-    width: 100%;
+.product-information .product-actions, .product-information .product-description {
+    background: #fff;
+    padding: 1.25rem;
+    margin-bottom: 10px;
+}
+
+#product #block-reassurance {
+    background: transparent;
+}
+
+.product-features-list {
+    list-style-type: disc;
 }

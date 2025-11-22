@@ -24,13 +24,7 @@
  *}
 {extends file=$layout}
 
-{block name='left_column'}{/block}
-
 {block name='content'}
-  <script type="text/javascript">
-    let contentWrapper = document.getElementById("content-wrapper");
-    contentWrapper.classList.add('full-col');
-  </script>
   <section id="main">
     <div class="cart-grid row">
 

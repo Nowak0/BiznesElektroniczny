@@ -24,7 +24,7 @@
  *}
 {extends file='layouts/layout-both-columns.tpl'}
 
-{block name='left_column'}{$smarty.block.parent}{/block}
+{block name='left_column'}{/block}
 {block name='right_column'}{/block}
 
 {block name='content_wrapper'}
