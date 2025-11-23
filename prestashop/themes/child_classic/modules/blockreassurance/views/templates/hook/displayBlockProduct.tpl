@@ -24,7 +24,7 @@
  *}
 
 <div id="block-reassurance" class="cart">
-  <div class="row" style="cursor:pointer;" onclick="window.open('https://monocerus.pl/content/4-polityka-prywatnosci')">
+  <div class="row" style="cursor:pointer;" onclick="window.open('{$urls.base_url}pl/content/2-legal-notice')">
     <div class="block-icon">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70px" height="70px" viewBox="0 0 70 70" version="1.1" data-img-url="/modules/blockreassurance/views/img/reassurance/pack2/security.svg" class="svg replaced-svg">
         <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
@@ -39,7 +39,7 @@
     <div class="block-title" style="color:#000000">Polityka bezpieczeństwa</div>
     <p style="color:#000000;"></p>
   </div>
-  <div class="row" style="cursor:pointer;" onclick="window.open('https://monocerus.pl/content/1-koszty-dostawy')">
+  <div class="row" style="cursor:pointer;" onclick="window.open('{$urls.base_url}pl/content/1-delivery')">
     <div class="block-icon">
       <picture><source srcset="/modules/blockreassurance/views/img/reassurance/pack2/carrier.svg" type="image/webp"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70px" height="70px" viewBox="0 0 70 70" version="1.1" data-img-url="/modules/blockreassurance/views/img/reassurance/pack2/carrier.svg" class="svg replaced-svg">
         <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
@@ -54,7 +54,7 @@
     <div class="block-title" style="color:#000000">Dostawa</div>
     <p style="color:#000000;"></p>
   </div>
-  <div class="row" style="cursor:pointer;" onclick="window.open('https://monocerus.pl/content/5-regulamin')">
+  <div class="row" style="cursor:pointer;" onclick="window.open('{$urls.base_url}pl/content/3-terms-and-conditions-of-use')">
     <div class="block-icon">
       <picture><source srcset="/modules/blockreassurance/views/img/reassurance/pack2/parcel.svg" type="image/webp"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70px" height="70px" viewBox="0 0 70 70" version="1.1" data-img-url="/modules/blockreassurance/views/img/reassurance/pack2/parcel.svg" class="svg replaced-svg">
         <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->

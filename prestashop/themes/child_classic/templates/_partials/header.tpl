@@ -63,12 +63,12 @@
             {if $page.page_name == 'index'}
               <h1>
                 <a href="{$urls.base_url}">
-                  {renderLogo}
+                  <img class="logo img-fluid" src="{$urls.theme_assets}img/logo.png" alt="Logo" width="640" height="249">
                 </a>
               </h1>
             {else}
               <a href="{$urls.base_url}">
-                {renderLogo}
+                <img class="logo img-fluid" src="{$urls.theme_assets}img/logo.png" alt="Logo" width="640" height="249">
               </a>
             {/if}
           {/if}

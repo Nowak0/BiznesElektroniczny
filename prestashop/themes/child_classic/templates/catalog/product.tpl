@@ -155,17 +155,9 @@
         <h3>Bezpieczeństwo produktu</h3>
 
         {block name='product_manufacturer'}
-        <h3>Producent</h3>
-          <div>
-            {foreach from=$product_manufacturer key=key item=value}
-              <strong>{$key}:</strong>
-              {if is_array($value)}
-                  <pre>{$value|@print_r}</pre>
-              {else}
-                  {$value}
-              {/if}
-              <br>
-            {/foreach}
+          <h3>Producent</h3>
+          <div class="product-manufacturer contact">
+            {include file='catalog/_partials/product-manufacturer.tpl'}
           </div>
         {/block}
 
