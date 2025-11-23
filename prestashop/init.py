@@ -142,9 +142,10 @@ def create_product(name, price, description, description_short, categories):
     )
 
     if response.status_code not in (200, 201):
-        return -1,-1, response.content
+        return -1, -1, response.content
 
-    return extract_id_from_xml(str(response.content)), extract_stock_available_id(str(response.content)), response.content
+    return extract_id_from_xml(str(response.content)), extract_stock_available_id(
+        str(response.content)), response.content
 
 
 def update_stock(stock_id, product_id, quantity):
@@ -179,6 +180,18 @@ def update_stock(stock_id, product_id, quantity):
     return response.status_code, response.text
 
 
+def add_product_image(product_id, file_path, position=1, cover=1):
+    url = f"{api_url}/images/products/{product_id}?position={position}&cover={cover}"
+
+    with open(file_path, "rb") as f:
+        files = {"image": f}
+        response = requests.post(
+            url,
+            files=files,
+            auth=(api_key, "")
+        )
+
+
 def process_products(product_list, categories_dict):
     errors = 0
     successes = 0
@@ -196,15 +209,21 @@ def process_products(product_list, categories_dict):
         product_id, stock_id, response = create_product(name, price, description, description_short, cat_ids)
 
         if product_id != -1:
-            update_stock(stock_id, product_id, random.randint(1,10))
+            update_stock(stock_id, product_id, random.randint(1, 10))
+            p1 = p.get("photo_1")
+            p2 = p.get("photo_2")
+            if p1:
+                add_product_image(product_id, f"../scraper/photos/{p.get("photo_1")}", 1, 1)
+            if p2:
+                add_product_image(product_id, f"../scraper/photos/{p.get("photo_2")}", 2, 0)
             successes += 1
         else:
             print(f"=======PRODUKT NAME: {name}=======")
             print(response)
-
             errors += 1
-        # print(f"Utworzono produkt:\n", f"- name: {name}")
+
     print(f"dodano: {successes}\n errory: {errors}")
+
 
 def main():
     categories = {}
@@ -231,4 +250,3 @@ if __name__ == "__main__":
     # create_product("test", 12.2, "opis", "krótki opis", 2)
     # for i in range(55,61):
     #     delete_product(i)
-
