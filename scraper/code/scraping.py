@@ -269,7 +269,7 @@ def scrape_single_product_details(product_url):
             
     details['photo_urls'] = image_links
 
-    description_full_el = soup.select_one('div.product-information')
+    description_full_el = soup.select_one('div.product-description')
     if description_full_el:
         details['opis_html'] = str(description_full_el) 
     else:
