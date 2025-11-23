@@ -1,3 +1,6 @@
 .DS_Store
 /.idea
 /scraper/.idea
+/automatic_testing/.idea
+/automatic_testing/pages/__pycache__
+/automatic_testing/__pycache__
