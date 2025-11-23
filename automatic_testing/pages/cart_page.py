@@ -1,5 +1,3 @@
-from idlelib.squeezer import ExpandingButton
-
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
@@ -13,7 +11,7 @@ class CartPage(BasePage):
 
 
     def open_cart(self):
-        self.driver.get("https://monocerus.pl/koszyk")
+        self.driver.get("http://localhost:8080/pl/koszyk")
 
 
     def list_items(self):

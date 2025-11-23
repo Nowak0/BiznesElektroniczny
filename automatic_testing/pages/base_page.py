@@ -20,8 +20,3 @@ class BasePage:
             return True
         except TimeoutException:
             return False
-
-
-    def get_text(self, locator, timeout=8):
-        element = wait_for(self.driver, locator, timeout)
-        return element.text.strip()

@@ -4,13 +4,15 @@ from utils import random_string, short_delay
 
 
 class AccountPage(BasePage):
-    CREATE_ACCOUNT_PAGE = "https://monocerus.pl/logowanie?create_account=1"
-    LOGIN_PAGE = "https://monocerus.pl/logowanie"
+    CREATE_ACCOUNT_PAGE = "http://localhost:8080/pl/logowanie?create_account=1"
+    LOGIN_PAGE = "http://localhost:8080/pl/logowanie"
     FIRST_NAME = (By.NAME, "firstname")
     LAST_NAME = (By.NAME, "lastname")
     EMAIL = (By.NAME, "email")
     PASSWORD = (By.NAME, "password")
-    CONFIRMATION = (By.NAME, "agreement_1")
+    # CONFIRMATION = (By.NAME, "agreement_1")
+    CONFIRMATION_BOXES = (By.CSS_SELECTOR, "input[type='checkbox']")
+    GENDER_RADIO = (By.CSS_SELECTOR, "#field-id_gender-1")
     SUBMIT_BUTTON = (By.CSS_SELECTOR, "button[type='submit']")
 
 
@@ -27,12 +29,13 @@ class AccountPage(BasePage):
         short_delay(2,3)
         first = "Michael"
         last = "Jordan"
-        email = "psscarpeta@gmail.com"
-        password = "qwerty65"
-        # email = random_string(prefix="test") + "@test.com"
-        # password = random_string(n=10)
+        email = random_string(prefix="test") + "@test.com"
+        password = random_string(n=10)
 
         try:
+            radio = self.driver.find_element(*self.GENDER_RADIO)
+            self.driver.execute_script("arguments[0].click();", radio)
+            short_delay()
             self.driver.find_element(*self.FIRST_NAME).send_keys(first)
             short_delay()
             self.driver.find_element(*self.LAST_NAME).send_keys(last)
@@ -41,8 +44,12 @@ class AccountPage(BasePage):
             short_delay()
             self.driver.find_element(*self.PASSWORD).send_keys(password)
             short_delay()
-            self.driver.find_element(*self.CONFIRMATION).click()
-            short_delay()
+
+            elements = self.driver.find_elements(*self.CONFIRMATION_BOXES)
+            for el in elements:
+                el.click()
+                short_delay()
+
             self.safe_click(self.SUBMIT_BUTTON)
             short_delay()
         except Exception as e:

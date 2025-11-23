@@ -51,4 +51,5 @@ class HomePage(BasePage):
             chosen_urls = random.sample(urls, limit)
             print("Chosen categories:")
             print(chosen_urls)
+            print("\n")
             return chosen_urls

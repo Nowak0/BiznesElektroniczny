@@ -44,7 +44,6 @@ class CategoryPage(BasePage):
         added = []
 
         for p in links:
-            print(p["url"])
             self.driver.get(p["url"])
             short_delay()
             try:
