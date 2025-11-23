@@ -141,7 +141,10 @@ def create_product(name, price, description, description_short, categories):
         auth=(api_key, "")
     )
 
-    return extract_id_from_xml(str(response.content)), extract_stock_available_id(str(response.content))
+    if response.status_code not in (200, 201):
+        return -1,-1, response.content
+
+    return extract_id_from_xml(str(response.content)), extract_stock_available_id(str(response.content)), response.content
 
 
 def update_stock(stock_id, product_id, quantity):
@@ -177,6 +180,8 @@ def update_stock(stock_id, product_id, quantity):
 
 
 def process_products(product_list, categories_dict):
+    errors = 0
+    successes = 0
     for p in product_list:
         name = p["name"]
         price = p["price"]
@@ -188,52 +193,26 @@ def process_products(product_list, categories_dict):
         for cat in categories:
             cat_ids.append(categories_dict[cat])
 
-        product_id, stock_id = create_product(name, price, description, description_short, cat_ids)
+        product_id, stock_id, response = create_product(name, price, description, description_short, cat_ids)
 
-        update_stock(stock_id, product_id, random.randint(1,10))
+        if product_id != -1:
+            update_stock(stock_id, product_id, random.randint(1,10))
+            successes += 1
+        else:
+            print(f"=======PRODUKT NAME: {name}=======")
+            print(response)
 
-        print(f"Utworzono produkt:\n", f"- name: {name}")
-
+            errors += 1
+        # print(f"Utworzono produkt:\n", f"- name: {name}")
+    print(f"dodano: {successes}\n errory: {errors}")
 
 def main():
-    # categories = {}
-    categories = {'1,5 mm': 151, '3 mm': 152, 'APOXIE': 155, 'Afryka': 203, 'Akcesoria': 141, 'Akcesoria Breyer': 58,
-                  'Akcesoria i lalki': 56, 'Ameryka Południowa': 208, 'Ameryka Północna': 207, 'Antarktyda': 206,
-                  'Artist Resin': 35, 'Australia': 205, 'Azja': 202, 'Breyer': 39, 'Bullyland': 117, 'Classics': 45,
-                  'CollectA': 68, 'Dekoracje': 161, 'Dinozaury': 164, 'Dom i zagroda': 79, 'Długopisy': 160,
-                  'Europa': 204, 'Fantasy': 114, 'Fantazyjne': 88, 'Fantazyjne i dekory': 63, 'Figurki żywiczne': 62,
-                  'Flamingi': 184, 'Gabloty z replikami': 90, 'Gady': 172, 'Gadżety': 158, 'Gryzonie': 188,
-                  'Jaszczurki': 175, 'Jednorożce': 38, 'Jednorożec Pummel': 118, 'Jeźdźcy': 133, 'Kaczkowate': 180,
-                  'Kalendarze adwentowe': 209, 'Konie': 111, 'Konie i kuce': 163, 'Konie skala 1:12': 82,
-                  'Kontynenty': 201, 'Kotowate': 189, 'Krokodyle': 176, 'Kubki': 159, 'Kuce i konie': 78, 'Kury': 183,
-                  'Kącik artysty': 145, 'Lalki': 47, 'Lalki Breyer': 57, 'Ludzie i akcesoria': 122,
-                  'Materiał pikowany': 157, 'Metry': 149, 'Mini Whinnies': 53, 'Mięczaki': 199,
-                  'Modele do malowania': 154, 'Modele koni': 51, 'Modele koni Isabell Werth': 139, 'Modele koni MW': 54,
-                  'Modele specjalne': 166, 'Mojo': 110, 'Naczelne': 190, 'Niedźwiedziowate': 191, 'Nieloty lądowe': 181,
-                  'Nieloty wodne': 179, 'Nowości 2017': 77, 'Nowości 2018': 76, 'Nowości 2019': 75, 'Nowości 2020': 74,
-                  'Nowości 2021': 73, 'Nowości 2022': 72, 'Nowości 2023': 71, 'Nowości 2024': 70, 'Nowości 2025': 69,
-                  'OUTLET': 67, 'Outlet': 162, 'Owady': 84, 'Papo': 130, 'Pawie': 182, 'Podstawki': 138,
-                  'Podstawki do modeli': 144, 'Prehistoryczne': 81, 'Przeszkody': 142, 'Psowate': 192,
-                  'Psy i koty': 128, 'Ptaki': 177, 'Płazy': 171, 'Rio Rondo': 156, 'Rolki': 148, 'Rośliny': 89,
-                  'Ryby': 168, 'Safari Ltd': 124, 'Schleich': 94, 'Schleich - Harry Potter™': 99,
-                  'Schleich - Ludzie i akcesoria': 96, 'Schleich - Nowości 2020': 106, 'Schleich - Nowości 2021': 105,
-                  'Schleich - Nowości 2022': 104, 'Schleich - Nowości 2023': 103, 'Schleich - Nowości 2024': 102,
-                  'Schleich - Nowości 2025': 101, 'Schleich - gospodarstwo i dom': 97, 'Schleich - konie i kuce': 95,
-                  'Schleich - zwierzęta dzikie': 98, 'Schleich Exclusive': 100, 'Seria Deluxe': 87,
-                  'Serie zakończone': 37, 'Sokoły': 185, 'Southlands Replicas': 109, 'Sowy': 178, 'Ssaki': 187,
-                  'Stablemates': 50, 'Stajnie': 60, 'Stawonogi': 200, 'Stekowce': 193, 'Stojaki i wieszaki': 143,
-                  'Sznurek / Linka 1 mm': 146, 'Słodkowodne': 169, 'Słonowodne': 170, 'Torbacze': 195,
-                  'Traditional': 40, 'Trąbowce': 198, 'WIA': 136, 'Wodne': 86, 'Wołowate': 196, 'Wróblowate': 186,
-                  'Wstążki rypsowe': 147, 'Wstążki satynowe': 150, 'Wycofane Breyer': 64, 'Wycofane Bullyland': 123,
-                  'Wycofane CollectA': 91, 'Wycofane Mojo': 115, 'Wycofane Safari Ltd.': 129, 'Wycofane Schleich': 108,
-                  'Wycofane WIA': 140, 'Węże': 174, 'Zajęczaki': 197, 'Zestawy': 92, 'Zestawy Breyer': 59,
-                  'Zestawy MW': 55, 'Zestawy kreatywne': 61, 'Zwierzęta': 167, 'Zwierzęta domowe': 134,
-                  'Zwierzęta dzikie': 132, 'a.manufaktura': 36, 'sznurek 2 mm': 153, 'Świat Bayala': 107,
-                  'Świat fantastyczny': 135, 'Świniowate': 194, 'Żółwie': 173}
-    # with open("../scraper/results/categories.json") as f:
-    #     data = json.load(f)
-    #     for node in data:
-    #         process_category_tree(node, categories)
+    categories = {}
+
+    with open("../scraper/results/categories.json") as f:
+        data = json.load(f)
+        for node in data:
+            process_category_tree(node, categories)
 
     with open("../scraper/results/products_links.json") as f:
         data = json.load(f)
@@ -250,6 +229,6 @@ def delete_product(id):
 if __name__ == "__main__":
     main()
     # create_product("test", 12.2, "opis", "krótki opis", 2)
-    # for i in range(38,55):
+    # for i in range(55,61):
     #     delete_product(i)
 
