@@ -33,6 +33,12 @@
                   </span>
                 {/if}
                 {$node.label}
+                {if $node.children|count}
+                <svg class="tri-desc" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="tri-desc" width=14 height=13>
+                  <title id="tri-desc">Strzałka w dół</title>
+                  <path d="M0 0 L14 0 L7 13 Z" fill="#484848" />
+                </svg>
+                {/if}
               </a>
               {if $node.children|count}
               <div {if $depth === 0} class="popover sub-menu js-sub-menu collapse"{else} class="collapse"{/if} id="top_sub_menu_{$_expand_id}">
