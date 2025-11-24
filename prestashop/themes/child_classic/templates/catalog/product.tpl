@@ -144,7 +144,17 @@
       <div class="tabs">
         {block name='product_description'}
           <h3>{l s='Description' d='Shop.Theme.Catalog'}</h3>
-          <div class="product-description">{$product.description nofilter}</div>
+          <div class="product-description">{$product.description nofilter}
+          {foreach from=$product key=key item=value}
+              <strong>{$key}:</strong>
+              {if is_array($value)}
+                  <pre>{$value|@print_r}</pre>
+              {else}
+                  {$value}
+              {/if}
+              <br>
+          {/foreach}
+        </div>
         {/block}
 
         {block name='product_details'}
