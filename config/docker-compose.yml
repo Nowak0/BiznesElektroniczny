@@ -29,17 +29,30 @@ services:
       PS_FOLDER_ADMIN: admin2137
       PS_FOLDER_INSTALL: install2137
       PS_INSTALL_AUTO: 1
-      PS_DOMAIN: localhost:8080
+      PS_DOMAIN: localhost
     depends_on:
       - mysql
-    ports:
-      - 8080:80
     networks:
       - prestashop
     volumes:
-      - ./themes/osiema:/var/www/html/themes/osiema
-      - ./themes/child_classic:/var/www/html/themes/child_classic
+      - ../prestashop/themes/osiema:/var/www/html/themes/osiema
+      - ../prestashop/themes/child_classic:/var/www/html/themes/child_classic
       - psdata:/var/www/html
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx-proxy
+    restart: always
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+    - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    - ./certs:/etc/nginx/certs:ro
+    depends_on:
+    - prestashop
+    networks:
+    - prestashop
 
 networks:
     prestashop:
