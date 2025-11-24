@@ -59,7 +59,7 @@
           </div>
         </li>
         <li class="category">
-          <a class="dropdown-item" href="{$urls.base_url}pl/outlet" data-depth="{$depth}">
+          <a class="dropdown-item" href="{$urls.base_url}pl/312-outlet" data-depth="{$depth}">
             Outlet
           </a>
         </li>
