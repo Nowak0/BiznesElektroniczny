@@ -27,7 +27,7 @@
     {l s='Nowości w sklepie' d='Shop.Theme.Catalog'}
   </h2>
   {include file="catalog/_partials/new_product_list.tpl" products=$products cssClass="row" productClass="col-xs-12 col-sm-6 col-lg-4 col-xl-3"}
-  <a class="all-product-link float-xs-left float-md-right h4" href="{$allProductsLink}">
+  <a class="all-product-link float-xs-left float-md-right h4" href="{$urls.base_url}pl/nowe-produkty">
     {l s='Wszystkie nowości w sklepie' d='Shop.Theme.Catalog'}<i class="material-icons">&#xE315;</i>
   </a>
 </section>
@@ -37,8 +37,9 @@
     {l s='Najczęściej kupowane' d='Shop.Theme.Catalog'}
   </h2>
   {include file="catalog/_partials/bestseller_product_list.tpl" products=$products cssClass="row" productClass="col-xs-12 col-sm-6 col-lg-4 col-xl-3"}
-  <a class="all-product-link float-xs-left float-md-right h4" href="{$allProductsLink}">
+  <a class="all-product-link float-xs-left float-md-right h4" href="{$urls.base_url}pl/najczesciej-kupowane">
     {l s='Wszystkie bestsellery' d='Shop.Theme.Catalog'}<i class="material-icons">&#xE315;</i>
+
   </a>
 </section>
 
@@ -47,7 +48,7 @@
     {l s='Wyprzedaż' d='Shop.Theme.Catalog'}
   </h2>
   {include file="catalog/_partials/onsale_product_list.tpl" products=$products cssClass="row" productClass="col-xs-12 col-sm-6 col-lg-4 col-xl-3"}
-  <a class="all-product-link float-xs-left float-md-right h4" href="{$allProductsLink}">
+  <a class="all-product-link float-xs-left float-md-right h4" href="{$urls.base_url}pl/promocje">
     {l s='Wszystkie produkty w promocji' d='Shop.Theme.Catalog'}<i class="material-icons">&#xE315;</i>
   </a>
 </section>

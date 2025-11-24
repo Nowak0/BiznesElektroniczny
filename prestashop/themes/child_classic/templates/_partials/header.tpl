@@ -63,12 +63,20 @@
             {if $page.page_name == 'index'}
               <h1>
                 <a href="{$urls.base_url}">
+                {if 1}
+                  {renderLogo}
+                {else}
                   <img class="logo img-fluid" src="{$urls.theme_assets}img/logo.png" alt="Logo" width="640" height="249">
+                {/if}
                 </a>
               </h1>
             {else}
               <a href="{$urls.base_url}">
-                <img class="logo img-fluid" src="{$urls.theme_assets}img/logo.png" alt="Logo" width="640" height="249">
+                {if 1}
+                  {renderLogo}
+                {else}
+                  <img class="logo img-fluid" src="{$urls.theme_assets}img/logo.png" alt="Logo" width="640" height="249">
+                {/if}
               </a>
             {/if}
           {/if}

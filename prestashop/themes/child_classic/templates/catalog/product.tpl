@@ -143,20 +143,12 @@
     {block name='product_tabs'}
       <div class="tabs">
         {block name='product_description'}
-          <h3>{l s='Description' d='Shop.Theme.Catalog'}</h3>
-          <div class="product-description">{$product.description nofilter}
-          {foreach from=$product key=key item=value}
-              <strong>{$key}:</strong>
-              {if is_array($value)}
-                  <pre>{$value|@print_r}</pre>
-              {else}
-                  {$value}
-              {/if}
-              <br>
-          {/foreach}
-        </div>
+          {**<h3>{l s='Description' d='Shop.Theme.Catalog'}</h3>
+          <div class="product-description">{$product.description nofilter}</div>*}
+          {$product.description nofilter}
         {/block}
-
+        
+        {**
         {block name='product_details'}
           <h3>{l s='Product Details' d='Shop.Theme.Catalog'}</h3>
           {include file='catalog/_partials/product-details.tpl'}
@@ -190,6 +182,7 @@
             </div>
           {/if}
         {/block}
+    *}
 
         {foreach from=$product.extraContent item=extra key=extraKey}
           <h3>{$extra.title}</h3>
