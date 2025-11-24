@@ -1,5 +1,0 @@
-<picture><source srcset="https://monocerus.pl/img/logo-1678022791.webp" type="image/webp"><img class="logo img-fluid" src="https://monocerus.pl/img/logo-1678022791.jpg" alt="Monocerus sklep internetowy" width="640" height="249"></picture>
-
-{foreach from=$social_links item='social_link'}
-        <li class="{$social_link.class}"><a href="{$social_link.url}" target="_blank" rel="noopener noreferrer">{$social_link.label}</a></li>
-      {/foreach}
