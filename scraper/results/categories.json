@@ -1,0 +1,903 @@
+[
+    {
+        "nazwa": "Artist Resin",
+        "link": "https://monocerus.pl/112-artist-resin",
+        "podkategorie": [
+            {
+                "nazwa": "a.manufaktura",
+                "link": "https://monocerus.pl/210-amanufaktura",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Serie zakończone",
+                "link": "https://monocerus.pl/192-artist-resin-serie-zakonczone",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Jednorożce",
+        "link": "https://monocerus.pl/102-jednorozce",
+        "podkategorie": []
+    },
+    {
+        "nazwa": "Breyer",
+        "link": "https://monocerus.pl/12-breyer",
+        "podkategorie": [
+            {
+                "nazwa": "Traditional",
+                "link": "https://monocerus.pl/15-traditional",
+                "podkategorie": [
+                    {
+                        "nazwa": "Modele koni",
+                        "link": "https://monocerus.pl/48-breyer-traditional-modele-koni",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Lalki",
+                        "link": "https://monocerus.pl/49-lalki-breyer-traditional",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Akcesoria",
+                        "link": "https://monocerus.pl/50-akcesoria-breyer-traditional",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Zestawy",
+                        "link": "https://monocerus.pl/51-zestawy-breyer-traditional",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Classics",
+                "link": "https://monocerus.pl/14-breyer-classics",
+                "podkategorie": [
+                    {
+                        "nazwa": "Modele koni",
+                        "link": "https://monocerus.pl/52-modele-koni-breyer-classics",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Lalki",
+                        "link": "https://monocerus.pl/53-lalki-breyer-classics",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Akcesoria",
+                        "link": "https://monocerus.pl/54-akcesoria-breyer-classics",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Zestawy",
+                        "link": "https://monocerus.pl/55-zestawy-breyer-classics",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Stablemates",
+                "link": "https://monocerus.pl/16-stablemates",
+                "podkategorie": [
+                    {
+                        "nazwa": "Modele koni",
+                        "link": "https://monocerus.pl/56-modele-koni-breyer-stablemates",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Zestawy",
+                        "link": "https://monocerus.pl/57-zestawy-breyer-stablemates",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Mini Whinnies",
+                "link": "https://monocerus.pl/20-mini-whinnies",
+                "podkategorie": [
+                    {
+                        "nazwa": "Modele koni MW",
+                        "link": "https://monocerus.pl/89-modele-koni-mw",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Zestawy MW",
+                        "link": "https://monocerus.pl/90-zestawy-mw",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Akcesoria i lalki",
+                "link": "https://monocerus.pl/19-akcesoria-i-lalki",
+                "podkategorie": [
+                    {
+                        "nazwa": "Lalki Breyer",
+                        "link": "https://monocerus.pl/44-lalki-breyer",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Akcesoria Breyer",
+                        "link": "https://monocerus.pl/45-akcesoria-breyer",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Zestawy Breyer",
+                        "link": "https://monocerus.pl/46-zestawy-breyer",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Stajnie",
+                        "link": "https://monocerus.pl/107-breyer-stajnie",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Zestawy kreatywne",
+                "link": "https://monocerus.pl/32-zestawy-kreatywne",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Figurki żywiczne",
+                "link": "https://monocerus.pl/26-figurki-zywiczne",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Fantazyjne i dekory",
+                "link": "https://monocerus.pl/79-fantazyjne-i-dekory",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wycofane Breyer",
+                "link": "https://monocerus.pl/105-wycofane-breyer",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2025",
+                "link": "https://monocerus.pl/211-nowosci-2025",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2024",
+                "link": "https://monocerus.pl/205-nowosci-2024",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "OUTLET",
+                "link": "https://monocerus.pl/202-outlet",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "CollectA",
+        "link": "https://monocerus.pl/5-collecta",
+        "podkategorie": [
+            {
+                "nazwa": "Nowości 2025",
+                "link": "https://monocerus.pl/213-nowosci-2025",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2024",
+                "link": "https://monocerus.pl/203-nowosci-2024",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2023",
+                "link": "https://monocerus.pl/197-nowosci-2023",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2022",
+                "link": "https://monocerus.pl/183-nowosci-2022",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2021",
+                "link": "https://monocerus.pl/142-nowosci-2021",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2020",
+                "link": "https://monocerus.pl/128-nowosci-2020",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2019",
+                "link": "https://monocerus.pl/101-nowosci-2019",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2018",
+                "link": "https://monocerus.pl/86-nowosci-2018",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Nowości 2017",
+                "link": "https://monocerus.pl/64-nowosci-2017-collecta",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Kuce i konie",
+                "link": "https://monocerus.pl/11-kuce-i-konie",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Dom i zagroda",
+                "link": "https://monocerus.pl/23-dom-i-zagroda",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta dzikie",
+                "link": "https://monocerus.pl/18-zwierzeta-dzikie",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Prehistoryczne",
+                "link": "https://monocerus.pl/17-prehistoryczne",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Konie skala 1:12",
+                "link": "https://monocerus.pl/41-konie-skala-112",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Ptaki",
+                "link": "https://monocerus.pl/70-ptaki",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Owady",
+                "link": "https://monocerus.pl/71-owady",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Psy i koty",
+                "link": "https://monocerus.pl/72-psy-i-koty",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wodne",
+                "link": "https://monocerus.pl/73-wodne",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Seria Deluxe",
+                "link": "https://monocerus.pl/78-seria-deluxe",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Fantazyjne",
+                "link": "https://monocerus.pl/125-fantazyjne",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Rośliny",
+                "link": "https://monocerus.pl/141-rosliny",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Gabloty z replikami",
+                "link": "https://monocerus.pl/140-gabloty-z-replikami",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wycofane CollectA",
+                "link": "https://monocerus.pl/132-wycofane-collecta",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zestawy",
+                "link": "https://monocerus.pl/186-collecta-zestawy",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Ludzie i akcesoria",
+                "link": "https://monocerus.pl/217-ludzie-i-akcesoria-",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Schleich",
+        "link": "https://monocerus.pl/27-schleich-figurki",
+        "podkategorie": [
+            {
+                "nazwa": "Schleich - konie i kuce",
+                "link": "https://monocerus.pl/30-schleich-konie-i-kuce",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - Ludzie i akcesoria",
+                "link": "https://monocerus.pl/28-schleich-ludzie-i-akcesoria",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - gospodarstwo i dom",
+                "link": "https://monocerus.pl/29-schleich-gospodarstwo-i-dom",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - zwierzęta dzikie",
+                "link": "https://monocerus.pl/31-schleich-zwierzeta-dzikie",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - Harry Potter™",
+                "link": "https://monocerus.pl/204-schleich-harry-potter",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich Exclusive",
+                "link": "https://monocerus.pl/75-schleich-exclusive",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - Nowości 2025",
+                "link": "https://monocerus.pl/212-schleich-nowosci-2025",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - Nowości 2024",
+                "link": "https://monocerus.pl/206-schleich-nowosci-2024",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - Nowości 2023",
+                "link": "https://monocerus.pl/196-schleich-nowosci-2023",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - Nowości 2022",
+                "link": "https://monocerus.pl/185-schleich-nowosci-2022",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - Nowości 2021",
+                "link": "https://monocerus.pl/135-schleich-nowosci-2021",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Schleich - Nowości 2020",
+                "link": "https://monocerus.pl/129-schleich-nowosci-2020",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Świat Bayala",
+                "link": "https://monocerus.pl/39-swiat-bayala",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wycofane Schleich",
+                "link": "https://monocerus.pl/76-wycofane-schleich",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Southlands Replicas",
+        "link": "https://monocerus.pl/88-southlands-replicas",
+        "podkategorie": []
+    },
+    {
+        "nazwa": "Mojo",
+        "link": "https://monocerus.pl/36-mojo",
+        "podkategorie": [
+            {
+                "nazwa": "Konie",
+                "link": "https://monocerus.pl/58-konie-mojo",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta dzikie",
+                "link": "https://monocerus.pl/59-zwierzeta-dzikie-mojo",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta domowe",
+                "link": "https://monocerus.pl/60-zwierzeta-domowe-mojo",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Fantasy",
+                "link": "https://monocerus.pl/61-fantasy-mojo",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wycofane Mojo",
+                "link": "https://monocerus.pl/199-wycofane-mojo",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Dinozaury",
+                "link": "https://monocerus.pl/201-dinozaury",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Bullyland",
+        "link": "https://monocerus.pl/80-bullyland",
+        "podkategorie": [
+            {
+                "nazwa": "Jednorożec Pummel",
+                "link": "https://monocerus.pl/95-jednorozec-pummel",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Konie i kuce",
+                "link": "https://monocerus.pl/96-konie-i-kuce",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta domowe",
+                "link": "https://monocerus.pl/97-zwierzeta-domowe",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta dzikie",
+                "link": "https://monocerus.pl/98-zwierzeta-dzikie",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Ludzie i akcesoria",
+                "link": "https://monocerus.pl/143-ludzie-i-akcesoria",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wycofane Bullyland",
+                "link": "https://monocerus.pl/200-wycofane-bullyland",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Safari Ltd",
+        "link": "https://monocerus.pl/34-safari-ltd",
+        "podkategorie": [
+            {
+                "nazwa": "Konie i kuce",
+                "link": "https://monocerus.pl/136-konie-i-kuce",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Ptaki",
+                "link": "https://monocerus.pl/137-ptaki",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta dzikie",
+                "link": "https://monocerus.pl/138-zwierzeta-dzikie",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Psy i koty",
+                "link": "https://monocerus.pl/139-psy-i-koty",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wycofane Safari Ltd.",
+                "link": "https://monocerus.pl/193-wycofane-safari-ltd",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Papo",
+        "link": "https://monocerus.pl/35-papo",
+        "podkategorie": [
+            {
+                "nazwa": "Konie i kuce",
+                "link": "https://monocerus.pl/126-konie-i-kuce",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta dzikie",
+                "link": "https://monocerus.pl/127-zwierzeta-dzikie",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Jeźdźcy",
+                "link": "https://monocerus.pl/131-jezdzcy",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta domowe",
+                "link": "https://monocerus.pl/133-zwierzeta-domowe",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Świat fantastyczny",
+                "link": "https://monocerus.pl/215-swiat-fantastyczny",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "WIA",
+        "link": "https://monocerus.pl/187-figurki-wia",
+        "podkategorie": [
+            {
+                "nazwa": "Zwierzęta",
+                "link": "https://monocerus.pl/207-zwierzeta",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Podstawki",
+                "link": "https://monocerus.pl/208-podstawki",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Modele koni Isabell Werth",
+                "link": "https://monocerus.pl/209-modele-koni-isabell-werth",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wycofane WIA",
+                "link": "https://monocerus.pl/216-wycofane-wia",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Akcesoria",
+        "link": "https://monocerus.pl/22-akcesoria",
+        "podkategorie": [
+            {
+                "nazwa": "Przeszkody",
+                "link": "https://monocerus.pl/87-przeszkody",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Stojaki i wieszaki",
+                "link": "https://monocerus.pl/84-stojaki-i-wieszaki",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Podstawki do modeli",
+                "link": "https://monocerus.pl/103-podstawki-do-modeli",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Kącik artysty",
+        "link": "https://monocerus.pl/33-kacik-artysty",
+        "podkategorie": [
+            {
+                "nazwa": "Sznurek / Linka 1 mm",
+                "link": "https://monocerus.pl/130-sznurek-linka-1-mm",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Wstążki rypsowe",
+                "link": "https://monocerus.pl/82-wstazki-rypsowe",
+                "podkategorie": [
+                    {
+                        "nazwa": "Rolki",
+                        "link": "https://monocerus.pl/113-wstazki-rypsowe-na-rolki",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Metry",
+                        "link": "https://monocerus.pl/114-wstazki-rypsowe-na-metry",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Wstążki satynowe",
+                "link": "https://monocerus.pl/85-wstazki-satynowe",
+                "podkategorie": [
+                    {
+                        "nazwa": "1,5 mm",
+                        "link": "https://monocerus.pl/198-wstazka-satynowa-1-5-mm-szerokosci",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "3 mm",
+                        "link": "https://monocerus.pl/116-wstazki-satynowe-3-mm",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "sznurek 2 mm",
+                        "link": "https://monocerus.pl/118-sznurek-2-mm",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Modele do malowania",
+                "link": "https://monocerus.pl/83-modele-do-malowania",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "APOXIE",
+                "link": "https://monocerus.pl/91-apoxie",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Rio Rondo",
+                "link": "https://monocerus.pl/92-rio-rondo",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Materiał pikowany",
+                "link": "https://monocerus.pl/120-material-pikowany",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Gadżety",
+        "link": "https://monocerus.pl/69-gadzety",
+        "podkategorie": [
+            {
+                "nazwa": "Kubki",
+                "link": "https://monocerus.pl/108-kubki",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Długopisy",
+                "link": "https://monocerus.pl/109-dlugopisy",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Dekoracje",
+                "link": "https://monocerus.pl/110-dekoracje",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Outlet",
+        "link": "https://monocerus.pl/74-outlet",
+        "podkategorie": [
+            {
+                "nazwa": "Konie i kuce",
+                "link": "https://monocerus.pl/119-konie-i-kuce",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Dinozaury",
+                "link": "https://monocerus.pl/123-dinozaury-outlet",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Zwierzęta",
+                "link": "https://monocerus.pl/124-zwierzeta-outlet",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Modele specjalne",
+        "link": "https://monocerus.pl/104-modele-specjalne",
+        "podkategorie": []
+    },
+    {
+        "nazwa": "Zwierzęta",
+        "link": "https://monocerus.pl/144-zwierzeta",
+        "podkategorie": [
+            {
+                "nazwa": "Ryby",
+                "link": "https://monocerus.pl/159-ryby",
+                "podkategorie": [
+                    {
+                        "nazwa": "Słodkowodne",
+                        "link": "https://monocerus.pl/162-slodkowodne",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Słonowodne",
+                        "link": "https://monocerus.pl/163-slonowodne",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Płazy",
+                "link": "https://monocerus.pl/157-plazy",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Gady",
+                "link": "https://monocerus.pl/158-gady",
+                "podkategorie": [
+                    {
+                        "nazwa": "Żółwie",
+                        "link": "https://monocerus.pl/161-zolwie",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Węże",
+                        "link": "https://monocerus.pl/164-weze",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Jaszczurki",
+                        "link": "https://monocerus.pl/165-jaszczurki",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Krokodyle",
+                        "link": "https://monocerus.pl/182-krokodyle",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Ptaki",
+                "link": "https://monocerus.pl/145-ptaki",
+                "podkategorie": [
+                    {
+                        "nazwa": "Sowy",
+                        "link": "https://monocerus.pl/146-ptaki-sowy",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Nieloty wodne",
+                        "link": "https://monocerus.pl/147-nieloty-wodne",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Kaczkowate",
+                        "link": "https://monocerus.pl/150-kaczkowate",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Nieloty lądowe",
+                        "link": "https://monocerus.pl/151-nieloty-ladowe",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Pawie",
+                        "link": "https://monocerus.pl/152-ptaki-pawie",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Kury",
+                        "link": "https://monocerus.pl/153-ptaki-kury",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Flamingi",
+                        "link": "https://monocerus.pl/154-ptaki-flamingi",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Sokoły",
+                        "link": "https://monocerus.pl/155-ptaki-sokoly",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Wróblowate",
+                        "link": "https://monocerus.pl/214-wroblowate",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Ssaki",
+                "link": "https://monocerus.pl/156-ssaki",
+                "podkategorie": [
+                    {
+                        "nazwa": "Gryzonie",
+                        "link": "https://monocerus.pl/160-gryzonie",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Kotowate",
+                        "link": "https://monocerus.pl/177-ssaki-kotowate",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Naczelne",
+                        "link": "https://monocerus.pl/180-naczelne",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Niedźwiedziowate",
+                        "link": "https://monocerus.pl/181-niedzwiedziowate",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Psowate",
+                        "link": "https://monocerus.pl/176-psowate",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Stekowce",
+                        "link": "https://monocerus.pl/175-stekowce",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Świniowate",
+                        "link": "https://monocerus.pl/178-ssaki-swiniowate",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Torbacze",
+                        "link": "https://monocerus.pl/166-torbacze",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Wołowate",
+                        "link": "https://monocerus.pl/179-wolowate",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Zajęczaki",
+                        "link": "https://monocerus.pl/190-zajeczaki",
+                        "podkategorie": []
+                    },
+                    {
+                        "nazwa": "Trąbowce",
+                        "link": "https://monocerus.pl/194-trabowce",
+                        "podkategorie": []
+                    }
+                ]
+            },
+            {
+                "nazwa": "Mięczaki",
+                "link": "https://monocerus.pl/188-mieczaki",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Stawonogi",
+                "link": "https://monocerus.pl/189-stawonogi",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Kontynenty",
+        "link": "https://monocerus.pl/167-kontynenty",
+        "podkategorie": [
+            {
+                "nazwa": "Azja",
+                "link": "https://monocerus.pl/168-azja",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Afryka",
+                "link": "https://monocerus.pl/169-afryka",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Europa",
+                "link": "https://monocerus.pl/170-europa",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Australia",
+                "link": "https://monocerus.pl/171-australia",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Antarktyda",
+                "link": "https://monocerus.pl/172-antarktyda",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Ameryka Północna",
+                "link": "https://monocerus.pl/173-ameryka-polnocna",
+                "podkategorie": []
+            },
+            {
+                "nazwa": "Ameryka Południowa",
+                "link": "https://monocerus.pl/174-ameryka-poludniowa",
+                "podkategorie": []
+            }
+        ]
+    },
+    {
+        "nazwa": "Kalendarze adwentowe",
+        "link": "https://monocerus.pl/191-kalendarze-adwentowe",
+        "podkategorie": []
+    }
+]
