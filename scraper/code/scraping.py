@@ -14,8 +14,8 @@ RESULTS_PRODUCTSLINKS_DIR = os.path.join(BASE_DIR, '..', 'results', 'products_li
 RESULTS_PRODUCT_DETAILED_DIR = os.path.join(BASE_DIR, '..', 'results', 'product_detail.json')
 
 MAX_PRODUCTS_PP = 7
-SLEEP_MIN = 3
-SLEEP_MAX = 5
+SLEEP_MIN = 1
+SLEEP_MAX = 2
 
 header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
@@ -299,9 +299,6 @@ def main():
         all_products_data.extend(products_from_category)
         
         sleep(SLEEP_MAX)
-        
-        if i >= 4:
-            break
         
     with open(RESULTS_PRODUCTSLINKS_DIR, 'w', encoding='utf-8') as f:
         json.dump(all_products_data, f, indent=4, ensure_ascii=False)    
