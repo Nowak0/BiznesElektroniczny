@@ -1,11 +1,12 @@
 import json
 import random
 import re
-
+from decimal import Decimal, ROUND_HALF_UP
 import requests
 
 api_url = "http://localhost:8080/api"
-api_key = "QSP3GTBTPDJ7MJR9KYN2TSS8KB2V28MY"
+# api_key = "QSP3GTBTPDJ7MJR9KYN2TSS8KB2V28MY"
+api_key = "IM9I8FH9RE5QNMHCVMX519EEAURS4F9K"
 
 
 def extract_id_from_xml(xml_text):
@@ -44,14 +45,17 @@ def create_category(name, parent_id=2):
         <is_root_category><![CDATA[0]]></is_root_category>
 
         <name>
+          <language id="1"><![CDATA[{name}]]></language>
           <language id="2"><![CDATA[{name}]]></language>
         </name>
 
         <link_rewrite>
+          <language id="1"><![CDATA[{slug}]]></language>
           <language id="2"><![CDATA[{slug}]]></language>
         </link_rewrite>
 
         <description>
+          <language id="1"><![CDATA[]]></language>
           <language id="2"><![CDATA[]]></language>
         </description>
 
@@ -86,6 +90,10 @@ def process_category_tree(node, categories, parent_id=2):
         process_category_tree(child, categories, new_cat_id)
 
 
+def gross_to_net(price_gross, rate_percent):
+    return round(float(str(price_gross)) / (1 + rate_percent / 100.0), 6)
+
+
 def create_product(name, price, description, description_short, categories):
     slug = name.lower().replace(" ", "-")
 
@@ -97,25 +105,32 @@ def create_product(name, price, description, description_short, categories):
             """ for cid in categories
     )
 
+    price_net = gross_to_net(price, 23)
+
     xml = f"""
             <prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
               <product>
                 <id><![CDATA[]]></id>
                 <name>
+                  <language id="1"><![CDATA[{name}]]></language>
                   <language id="2"><![CDATA[{name}]]></language>
                 </name>
-                <price><![CDATA[{price}]]></price>
+                <price><![CDATA[{price_net}]]></price>
+                <id_tax_rules_group><![CDATA[1]]></id_tax_rules_group>
                 <active><![CDATA[1]]></active>
             
                 <description>
+                  <language id="1"><![CDATA[{description}]]></language>
                   <language id="2"><![CDATA[{description}]]></language>
                 </description>
                 
                 <description_short>
+                  <language id="1"><![CDATA[{description_short}]]></language>
                   <language id="2"><![CDATA[{description_short}]]></language>
                 </description_short>
             
                 <link_rewrite>
+                  <language id="1"><![CDATA[{slug}]]></language>
                   <language id="2"><![CDATA[{slug}]]></language>
                 </link_rewrite>
                 
@@ -177,7 +192,10 @@ def update_stock(stock_id, product_id, quantity):
         auth=(api_key, "")
     )
 
-    return response.status_code, response.text
+    # return response.status_code, response.text
+    if response.status_code not in (200, 201):
+        raise Exception(f"Stock update failed: {response.status_code}\n{response.text}")
+    return True
 
 
 def add_product_image(product_id, file_path, position=1, cover=1):
@@ -205,11 +223,12 @@ def process_products(product_list, categories_dict):
 
         for cat in categories:
             cat_ids.append(categories_dict[cat])
+        cat_ids.append(2)
 
         product_id, stock_id, response = create_product(name, price, description, description_short, cat_ids)
 
         if product_id != -1:
-            update_stock(stock_id, product_id, random.randint(1, 10))
+            update_stock(stock_id, product_id, random.randint(0, 10))
             p1 = p.get("photo_1")
             p2 = p.get("photo_2")
             if p1:
@@ -228,12 +247,12 @@ def process_products(product_list, categories_dict):
 def main():
     categories = {}
 
-    with open("../scraper/results/categories.json") as f:
+    with open("../scraper/results/categories.json", encoding="utf-8") as f:
         data = json.load(f)
         for node in data:
             process_category_tree(node, categories)
 
-    with open("../scraper/results/products_links.json") as f:
+    with open("../scraper/results/products_links.json", encoding="utf-8") as f:
         data = json.load(f)
         process_products(data, categories)
 
