@@ -22,54 +22,33 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
-{extends file=$layout}
+{extends file='page.tpl'}
 
-{block name="left_column"}
-  <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
-    {if $page.page_name == 'product'}
-      {hook h='displayLeftColumnProduct'}
-    {else}
-      {hook h="displayLeftColumn"}
-    {/if}
-  </div>
+{block name='page_title'}
+  {l s='Log in to your account' d='Shop.Theme.Customeraccount'}
 {/block}
+{block name='left_column'}{/block}
+{block name="mid_col"}{/block}
 
-{block name='content'}
-
-  {block name="mid_col"}
-  <script type="text/javascript">
-    let contentWrapper = document.getElementById("content-wrapper");
-    contentWrapper.classList.add('mid-col');
-  </script>
-  {/block}
-
-  <section id="main">
-
-    {block name='page_header_container'}
-      {block name='page_title' hide}
-        <header class="page-header">
-          <h1>{$smarty.block.child}</h1>
-        </header>
+{block name='page_content'}
+    {block name='login_form_container'}
+      <section class="login-form">
+        {render file='customer/_partials/login-form.tpl' ui=$login_form}
+      </section>
+      <hr/>
+      {include file='catalog/_partials/google_button.tpl'}
+      <style>
+        #content #google-button > div{
+          margin: auto;
+        }
+      </style>
+      {block name='display_after_login_form'}
+        {hook h='displayCustomerLoginFormAfter'}
       {/block}
-    {/block}
-
-    {block name='page_content_container'}
-      <div id="content" class="page-content card card-block">
-        {block name='page_content_top'}{/block}
-        {block name='page_content'}
-          <!-- Page content -->
-        {/block}
+      <div class="no-account">
+        <a href="{$urls.pages.register}" data-link-action="display-register-form">
+          {l s='No account? Create one here' d='Shop.Theme.Customeraccount'}
+        </a>
       </div>
     {/block}
-
-    {block name='page_footer_container'}
-      <footer class="page-footer">
-        {block name='page_footer'}
-          <!-- Footer content -->
-        {/block}
-      </footer>
-    {/block}
-
-  </section>
-
 {/block}
