@@ -11,7 +11,7 @@ class CartPage(BasePage):
 
 
     def open_cart(self):
-        self.driver.get("http://localhost:8080/pl/koszyk")
+        self.driver.get("https://localhost/pl/koszyk")
 
 
     def list_items(self):
