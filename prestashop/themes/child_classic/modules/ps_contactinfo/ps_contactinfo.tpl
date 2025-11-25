@@ -41,9 +41,9 @@
     <br> Wojska Polskiego 15
     <br> 42-100 Kłobuck
     <br> Polska
-    <br> 
+    <br>
     {* [1][/1] is for a HTML tag. *}
-      {l s='Call us: [1]%phone%[/1]'
+    {l s='Call us: [1]%phone%[/1]'
         sprintf=[
         '[1]' => '<span>',
         '[/1]' => '</span>',
@@ -55,14 +55,14 @@
       <br>
       {* [1][/1] is for a HTML tag. *}
       {l
-        s='Fax: [1]%fax%[/1]'
-        sprintf=[
-          '[1]' => '<span>',
-          '[/1]' => '</span>',
-          '%fax%' => $contact_infos.fax
-        ]
-        d='Shop.Theme.Global'
-      }
+          s='Fax: [1]%fax%[/1]'
+          sprintf=[
+            '[1]' => '<span>',
+            '[/1]' => '</span>',
+            '%fax%' => $contact_infos.fax
+          ]
+          d='Shop.Theme.Global'
+        }
     {/if}
   </div>
 </div>
