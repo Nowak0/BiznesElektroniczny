@@ -24,15 +24,17 @@
  *}
 
 {capture assign="productClasses"}{if !empty($productClass)}{$productClass}{else}col-xs-12 col-sm-6 col-xl-4{/if}{/capture}
-{assign var="limit" value=3}
+{assign var="limit" value=4}
 {assign var="i" value=0}
 
 <div class="products{if !empty($cssClass)} {$cssClass}{/if}">
     {foreach from=$products item="product" key="position"}
     {if $i >= $limit}{break}{/if}
         {if $product.has_discount}
+            {if $product.quantity > 0}
             {include file="catalog/_partials/miniatures/product.tpl" product=$product position=$position productClasses=$productClasses}
             {assign var="i" value=$i+1}
+            {/if}
         {/if}
     {/foreach}
 </div>
