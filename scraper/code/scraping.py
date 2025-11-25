@@ -13,7 +13,7 @@ RESULTS_CATEGORIES_DIR = os.path.join(BASE_DIR, '..', 'results', 'categories.jso
 RESULTS_PRODUCTSLINKS_DIR = os.path.join(BASE_DIR, '..', 'results', 'products_links.json')
 RESULTS_PRODUCT_DETAILED_DIR = os.path.join(BASE_DIR, '..', 'results', 'product_detail.json')
 
-MAX_PRODUCTS_PP = 7
+MAX_PRODUCTS_PP = 17
 SLEEP_MIN = 1
 SLEEP_MAX = 2
 
