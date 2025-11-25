@@ -4,9 +4,9 @@ import re
 from decimal import Decimal, ROUND_HALF_UP
 import requests
 
-api_url = "http://localhost:8080/api"
+api_url = "https://localhost/api"
 # api_key = "QSP3GTBTPDJ7MJR9KYN2TSS8KB2V28MY"
-api_key = "	Z5TB26MIZLXRQQPPG9YWT22SZT1XYVRF"
+api_key = "		JKB27S16DEIRFKI9SZH4DZ8EUAA37VPE"
 
 
 def extract_id_from_xml(xml_text):
@@ -67,7 +67,8 @@ def create_category(name, parent_id=2):
         f"{api_url}/categories",
         data=xml.encode('utf-8'),
         headers={'Content-Type': 'application/xml'},
-        auth=(api_key, '')
+        auth=(api_key, ''),
+        verify=False
     )
 
     if response.status_code in (200, 201):
@@ -153,7 +154,8 @@ def create_product(name, price, description, description_short, categories):
         f"{api_url}/products",
         data=xml.encode("utf-8"),
         headers={"Content-Type": "application/xml"},
-        auth=(api_key, "")
+        auth=(api_key, ""),
+        verify=False
     )
 
     if response.status_code not in (200, 201):
@@ -189,7 +191,8 @@ def update_stock(stock_id, product_id, quantity):
         f"{api_url}/stock_availables/{stock_id}",
         data=xml.encode('utf-8'),
         headers={"Content-Type": "application/xml"},
-        auth=(api_key, "")
+        auth=(api_key, ""),
+        verify=False
     )
 
     # return response.status_code, response.text
@@ -206,7 +209,8 @@ def add_product_image(product_id, file_path, position=1, cover=1):
         response = requests.post(
             url,
             files=files,
-            auth=(api_key, "")
+            auth=(api_key, ""),
+            verify=False
         )
 
 
@@ -260,7 +264,8 @@ def main():
 def delete_product(id):
     requests.delete(
         f"{api_url}/products/{id}",
-        auth=(api_key, "")
+        auth=(api_key, ""),
+        verify=False
     )
 
 
