@@ -30,7 +30,9 @@
 <div class="products{if !empty($cssClass)} {$cssClass}{/if}">
     {foreach from=$products item="product" key="position"}
         {if $i >= $limit}{break}{/if}
+        {if $product.quantity > 0}
         {include file="catalog/_partials/miniatures/product.tpl" product=$product position=$position productClasses=$productClasses}
         {assign var="i" value=$i+1}
+        {/if}
     {/foreach}
 </div>
