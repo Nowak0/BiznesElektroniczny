@@ -11,7 +11,7 @@ from pages.home_page import HomePage
 from pages.order_history_page import OrderHistoryPage
 from utils import short_delay
 
-BASE_URL = "http://localhost:8080/pl/"
+BASE_URL = "https://localhost/pl/"
 DOWNLOAD_DIR = "./downloads"
 
 
@@ -60,7 +60,8 @@ def account_page(driver, type="register"):
     if type == "register":
         user_data = account.register_new_user()
     else:
-        user_data = account.login(email="psscarpeta@gmail.com", password="qwerty65")
+        user_data = account.login(email="psscarpeta@gmail.com", password="qwerty")
+
     print(f"Registered user: {user_data}\n\n")
 
 
@@ -87,7 +88,7 @@ def main():
     try:
         home = HomePage(driver)
         home.open(BASE_URL)
-        short_delay(3,3)
+        short_delay(10,10)
 
         category_page(driver, home)
         cart_page(driver)
