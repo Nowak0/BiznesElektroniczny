@@ -7,7 +7,7 @@ from utils import short_delay, random_string
 
 
 class CheckoutPage(BasePage):
-    CHECKOUT_PAGE_LINK = "http://localhost:8080/pl/zamówienie"
+    CHECKOUT_PAGE_LINK = "https://localhost/pl/zamówienie"
     ADDRESS_SELECT = (By.NAME, "address1")
     POSTAL_CODE_SELECT = (By.NAME, "postcode")
     CITY_SELECT = (By.NAME, "city")
@@ -18,7 +18,7 @@ class CheckoutPage(BasePage):
     ADDRESS_BUTTON = (By.NAME, "confirm-addresses")
     CARRIER_BUTTON = (By.NAME, "confirmDeliveryOption")
     PAYMENT_BUTTON = (By.CSS_SELECTOR, "button[type='submit'], .btn.btn-primary.center-block")
-    PAYMENT_TYPE = "przelew"
+    PAYMENT_TYPE = "gotówk"
 
 
     def open_page(self):
@@ -78,9 +78,12 @@ class CheckoutPage(BasePage):
     def accept_terms(self):
         checkbox = self.driver.find_element(*self.TERMS_CHECK)
         self.driver.execute_script("arguments[0].click();", checkbox)
-        short_delay()
+        short_delay(3,3)
 
 
     def place_order(self):
-        self.safe_click(self.PAYMENT_BUTTON)
+        buttons = self.driver.find_elements(*self.PAYMENT_BUTTON)
+        button = buttons[-1]
+        button.click()
+        # self.safe_click(self.PAYMENT_BUTTON)
         short_delay()

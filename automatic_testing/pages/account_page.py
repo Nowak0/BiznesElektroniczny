@@ -4,8 +4,8 @@ from utils import random_string, short_delay
 
 
 class AccountPage(BasePage):
-    CREATE_ACCOUNT_PAGE = "http://localhost:8080/pl/logowanie?create_account=1"
-    LOGIN_PAGE = "http://localhost:8080/pl/logowanie"
+    CREATE_ACCOUNT_PAGE = "https://localhost/pl/logowanie?create_account=1"
+    LOGIN_PAGE = "https://localhost/pl/logowanie"
     FIRST_NAME = (By.NAME, "firstname")
     LAST_NAME = (By.NAME, "lastname")
     EMAIL = (By.NAME, "email")
@@ -27,15 +27,12 @@ class AccountPage(BasePage):
     def register_new_user(self):
         self.open_registration()
         short_delay(2,3)
-        first = "Michael"
-        last = "Jordan"
+        first = random_string(prefix="T")
+        last = random_string(prefix="F")
         email = random_string(prefix="test") + "@test.com"
-        password = random_string(n=10)
+        password = random_string(n=10, digits=True)
 
         try:
-            radio = self.driver.find_element(*self.GENDER_RADIO)
-            self.driver.execute_script("arguments[0].click();", radio)
-            short_delay()
             self.driver.find_element(*self.FIRST_NAME).send_keys(first)
             short_delay()
             self.driver.find_element(*self.LAST_NAME).send_keys(last)
@@ -44,14 +41,10 @@ class AccountPage(BasePage):
             short_delay()
             self.driver.find_element(*self.PASSWORD).send_keys(password)
             short_delay()
-
-            elements = self.driver.find_elements(*self.CONFIRMATION_BOXES)
-            for el in elements:
-                el.click()
-                short_delay()
-
-            self.safe_click(self.SUBMIT_BUTTON)
+            self.driver.find_element(*self.CONFIRMATION_BOXES).click()
             short_delay()
+            self.safe_click(self.SUBMIT_BUTTON)
+            short_delay(4,4)
         except Exception as e:
             raise Exception(f"Error registering new user: {e}")
 
