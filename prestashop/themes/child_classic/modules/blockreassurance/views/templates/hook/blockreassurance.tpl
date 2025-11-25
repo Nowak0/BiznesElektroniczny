@@ -51,7 +51,7 @@
       <p style="color:#000000;"></p>
     </div>
     <div class="col-md-4 offset-md-0 col-sm-6 offset-sm-0 col-xs-12" style="cursor:pointer;"
-      onclick="window.open('{$urls.base_url}pl/content/1-koszt-dostawy')">
+      onclick="window.open('{$urls.base_url}pl/content/1-koszty-dostawy')">
       <div class="block-icon">
         <picture>
           <source srcset="/modules/blockreassurance/views/img/reassurance/pack2/carrier.svg" type="image/webp"><svg
