@@ -1,0 +1,43 @@
+ 
+
+{shop_url}
+
+Cześć {firstname} {lastname},
+
+Dzięki za złożenie zamówienia na {shop_name}!
+
+Szczegóły zamówienia
+
+Zamówienie: {order_name} Złożone dnia {date}
+
+Płatność: {payment}
+
+Odnośnik	Produkt	Cena	Ilość	Cena całkowita  {products_txt} {discounts_txt}
+Produkty	{total_products}
+Zniżki	{total_discounts}
+Opakowania prezentowe	{total_wrapping}
+Dostawa	{total_shipping}
+Podatek	{total_tax_paid}
+Cena całowita	{total_paid}
+
+Dostawa
+
+Przewoźnik: {carrier}
+
+Płatność: {payment}
+
+Opakowanie eko: {recycled_packaging_label}
+
+Adres dostawy
+
+{delivery_block_txt}
+
+Adres rozliczeniowy
+
+{invoice_block_txt}
+
+
+
+[{shop_name}]({shop_url})
+
+Powered by [PrestaShop](https://www.prestashop.com/?utm_source=marchandprestashop&utm_medium=e-mail&utm_campaign=footer_1-7)
