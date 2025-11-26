@@ -85,5 +85,4 @@ class CheckoutPage(BasePage):
         buttons = self.driver.find_elements(*self.PAYMENT_BUTTON)
         button = buttons[-1]
         button.click()
-        # self.safe_click(self.PAYMENT_BUTTON)
-        short_delay()
+        short_delay(3,4)
