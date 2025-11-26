@@ -9,15 +9,21 @@ from pages.category_page import CategoryPage
 from pages.checkout_page import CheckoutPage
 from pages.home_page import HomePage
 from pages.order_history_page import OrderHistoryPage
+from pages.warning_page import WarningPage
 from utils import short_delay
 
 BASE_URL = "https://localhost/pl/"
 DOWNLOAD_DIR = "./downloads"
 
 
+def warning_page(driver):
+    warning_page = WarningPage(driver)
+    warning_page.accept_warning()
+
+
 def category_page(driver, home):
     categories = home.pick_category_links()
-    # categories = [("", "http://localhost:8080/pl/3-clothes"), ("", "http://localhost:8080/pl/6-accessories")]
+    # categories = [("", "https://localhost/pl/43-collecta"), ("", "https://localhost/pl/14-breyer")]
     total_added = []
 
     undone_adds = 0
@@ -86,10 +92,11 @@ def order_history_page(driver):
 def main():
     driver = create_driver(download_dir=DOWNLOAD_DIR, headless=False)
     try:
+
         home = HomePage(driver)
         home.open(BASE_URL)
-        short_delay(10,10)
-
+        short_delay()
+        warning_page(driver)
         category_page(driver, home)
         cart_page(driver)
         account_page(driver, type="register")
