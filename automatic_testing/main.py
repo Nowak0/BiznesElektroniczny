@@ -9,6 +9,7 @@ from pages.category_page import CategoryPage
 from pages.checkout_page import CheckoutPage
 from pages.home_page import HomePage
 from pages.order_history_page import OrderHistoryPage
+from pages.warning_page import WarningPage
 from utils import short_delay
 
 BASE_URL = "https://localhost/pl/"
