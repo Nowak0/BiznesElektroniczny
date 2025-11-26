@@ -1,436 +1,307 @@
-import requests
-from bs4 import BeautifulSoup
-import time
-import json
 import os
-from requests.compat import urljoin
-import random
+import requests
+import json
+import re
+from bs4 import BeautifulSoup
+from time import sleep
 
-# SELENIUM
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
-
-
-# KONFIGURACJA
-MAIN_URL = 'https://8a.pl/'
-
-# Nagłówki są dla get_main_categories()
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-    'Accept-Language': 'pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7',
-    'Referer': MAIN_URL
-}
+MAIN_URL = "https://monocerus.pl/"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CATEGORIES_FILE = os.path.join(BASE_DIR, '..', 'results', 'main_categories.json')
-OUTPUT_FILE = os.path.join(BASE_DIR, '..', 'results', 'links_products.json')
-INPUT_LINKS_FILE = os.path.join(BASE_DIR, '..', 'results', 'links_products.json')
-OUTPUT_DATA_FILE = os.path.join(BASE_DIR, '..', 'results', 'detailed_products_data.json')
-MAX_PRODUCTS_PER_CATEGORY = 10
-DELAY_SECONDS = 5
-DELAY_SECONDS_MAX = 8
+PHOTOS_DIR = os.path.join(BASE_DIR, '..', 'photos')
+RESULTS_CATEGORIES_DIR = os.path.join(BASE_DIR, '..', 'results', 'categories.json')
+RESULTS_PRODUCTSLINKS_DIR = os.path.join(BASE_DIR, '..', 'results', 'products_links.json')
+RESULTS_PRODUCT_DETAILED_DIR = os.path.join(BASE_DIR, '..', 'results', 'product_detail.json')
 
-# INICJALIZACJA STEROWNIKA SELENIUM
+MAX_PRODUCTS_PP = 17
+SLEEP_MIN = 1
+SLEEP_MAX = 2
 
-chrome_options = Options()
-chrome_options.add_argument("--headless") 
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
+header = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+}
+   
+def sanitize_url_for_medium(url):
+    if not url:
+        return ""
 
+    return re.sub(r'(\d+)-[a-z_]*default/', r'\1-medium_default/', url)
 
-def initialize_driver():    
-    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging']) 
+def sanitize_filename(name):
+    name = re.sub(r'[^\w\s-]', '', name).strip()
+    name = re.sub(r'[-\s]+', '_', name)
+    return name[:50]
+       
+def build_subcategories(main_li):    
     
-    try:
-        service = Service(log_path='NUL')
-        driver = webdriver.Chrome(service=service, options=chrome_options)
-        driver.set_page_load_timeout(30)
-        return driver
+    results = []
     
-    except WebDriverException as e:
-        print(f"❌ Błąd inicjalizacji sterownika: {e}")
-        print("Upewnij się, że masz zainstalowaną przeglądarkę Chrome oraz odpowiedni 'chromedriver' (lub nowsze Selenium).")
-        return None
-
-
-# POBIERANIE KATEGORII (requests)
-def get_main_categories():
-    categories_data = []
-
-    print(f"Pobieranie strony głównej: {MAIN_URL}...")
-    
-    try:
-        response = requests.get(MAIN_URL, headers=HEADERS, timeout=15)
-        response.raise_for_status()
+    for li in main_li:
         
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        main_menu_items = soup.find_all('li', class_='level0') # klasa nagłówka menu głównego
+        main_link_tag = li.find('a', class_=False) 
+        if not main_link_tag:
+            return None
         
-        if not main_menu_items:
-            print("Nie znaleziono elementów menu z klasą 'level0'.")
-            return []
-
-
-        for item in main_menu_items:
-            link_tag = item.find('a', class_='level-top') # klasa pojedyńczych kategorii
+        category_data = {
+            "nazwa": main_link_tag.get_text(strip=True),
+            "link": main_link_tag.get('href'),
+            "podkategorie": []
+        }
+    
+        sub_menu_ul = li.find('ul', class_='category-sub-menu')
+        
+        if sub_menu_ul:
+            all_sub_lis = sub_menu_ul.find_all('li', recursive=False)
             
-            if link_tag:
-                category_name_tag = link_tag.find('span') # nazwa
-                name = category_name_tag.get_text(strip=True) if category_name_tag else 'Brak nazwy'
-                href = link_tag.get('href') # link
-                full_url = requests.compat.urljoin(MAIN_URL, href)
+            def process_sub_list(parent_li):
+                link_tag = parent_li.select_one('a.category-sub-link')
+                
+                if not link_tag:
+                    return None
+                
+                sub_category = {
+                    "nazwa": link_tag.get_text(strip=True),
+                    "link": link_tag.get('href'),
+                    # Inicjalizacja listy na niższe poziomy zagnieżdżenia
+                    "podkategorie": [] 
+                }
+                
+                # Sprawdź, czy istnieje głębsze zagnieżdżenie (div.collapse)
+                nested_div = parent_li.select_one('div.collapse')
+                if nested_div:
+                    # Znajdź listę podkategorii wewnątrz tego zagnieżdżenia
+                    nested_ul = nested_div.select_one('ul.category-sub-menu')
+                    if nested_ul:
+                        # Znajdź bezpośrednie elementy <li> w tym zagnieżdżeniu (Poziom + 1)
+                        nested_lis = nested_ul.find_all('li', recursive=False)
+                        for nested_li in nested_lis:
+                            # Wywołanie rekurencyjne dla kolejnego poziomu
+                            child_data = process_sub_list(nested_li)
+                            if child_data:
+                                sub_category['podkategorie'].append(child_data)
+                                
+                return sub_category
 
-                if full_url and full_url != MAIN_URL:
-                    categories_data.append({'name': name, 'url': full_url})
+            # Przetwarzamy elementy Poziomu 1
+            for li_level_1 in all_sub_lis:
+                sub_cat_data = process_sub_list(li_level_1)
+                if sub_cat_data:
+                    category_data['podkategorie'].append(sub_cat_data)
         
-        print(f"✅ Znaleziono {len(categories_data)} głównych kategorii.")
-        return categories_data
+        results.append(category_data)
 
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Wystąpił błąd sieciowy lub błąd statusu HTTP (MAIN_URL): {e}")
-        return []
-    finally:
-        time.sleep(DELAY_SECONDS)
-        
-def load_categories(file_path):
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"❌ Błąd: Nie znaleziono pliku kategorii: {file_path}. Uruchom najpierw funkcję create_categories.")
-        return []
-
-
-# FUNKCJA ZAPISUJĄCA KATEGORIE
-def create_categories():
-    kategorie = get_main_categories()
-
-    if kategorie:
-        result_dir = os.path.join(BASE_DIR, '..', 'results')
-        os.makedirs(result_dir, exist_ok=True)
-        file_path = os.path.join(BASE_DIR, '..', 'results', 'main_categories.json')
-
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(kategorie, f, indent=4, ensure_ascii=False)
-
-        print(f"\n[CREATE] Dane zostały pomyślnie zapisane do: {file_path}")
-
-    return kategorie
-
-
-# POBIERANIE PRODUKTU (selenium)
-def scrape_product_links_selenium(driver, category_url, category_name):
+    return results
+       
+def build_categories():
     
-    product_links = []
-    print(f"\n---> Scrapowanie kategorii: {category_name} ({category_url})")
-
-    WAIT_TIME = 15 # Czas czekania na strone
-
-    try:
-        driver.get(category_url)
+    response = requests.get(MAIN_URL, headers=header, timeout=10)
+    response.raise_for_status()
         
-        products_container_xpath = '//ol[contains(@class, "products list items product-items")]' # link listy produtków
-        wait = WebDriverWait(driver, WAIT_TIME)
+    soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Pobieranie kontenera
-        product_list = wait.until(
-            EC.visibility_of_element_located((By.XPATH, products_container_xpath))
-        )
-        print("   -> Znaleziono kontener listy produktów.")
-
-        # Pobieranie produktu
-        product_item_css = 'a[data-category-product-main-image]'
-        wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, product_item_css))
-        )
-        print("   -> Pierwszy produkt załadowany pomyślnie.")
+    main_li = soup.find_all('li', {'data-depth': '0'})
         
-        product_items = product_list.find_elements(By.CSS_SELECTOR, product_item_css)[:MAX_PRODUCTS_PER_CATEGORY]
-
-        if not product_items:
-            print("   ⚠️ Znaleziono kontener, ale linki produktów nie są widoczne (pusta lista).")
-            return []
-        
-        for item in product_items:
-            href = item.get_attribute('href')
-            title = item.get_attribute('title') 
-            
-            if href and title:
-                product_links.append({
-                    'category': category_name,
-                    'name': title,
-                    'url': href
-                })
-        
-        print(f"   ✅ Zebrano {len(product_links)} / {MAX_PRODUCTS_PER_CATEGORY} linków produktowych.")
-        
-    except TimeoutException:
-        print(f"   ❌ Przekroczono limit czasu ładowania (TIMEOUT) lub nie znaleziono kluczowego elementu w ciągu {WAIT_TIME}s.")
-    except NoSuchElementException:
-        print("   ❌ Nie znaleziono kontenera listy produktów lub pierwszego elementu.")
-    except Exception as e:
-        print(f"   ❌ Wystąpił nieznany błąd: {e}")
-    finally:
-        # Losowe opoznienie, trickowanie strony 🤡
-        sleep_duration = random.uniform(DELAY_SECONDS, DELAY_SECONDS_MAX) 
-        print(f"   -> Oczekiwanie {sleep_duration:.2f}s przed kolejnym żądaniem...")
-        time.sleep(sleep_duration)
-        
-    return product_links
-
-
-# POBIERANIE CENY PRODUKTU (selenium
-def scrape_product_data_price(driver):
-    price_element_css = '.price-wrapper .price'
-    price_element = driver.find_element(By.CSS_SELECTOR, price_element_css)
-    price_text = price_element.text.strip().replace('\xa0', ' ').replace(',', '.')
-
-    # Pobieramy cenę z data-price-amount, jeśli element nadrzędny jest dostępny
-    price_amount = price_element.find_element(By.XPATH, '..').get_attribute('data-price-amount')
-
-    if price_amount:
-        return price_amount
-    else:
-        return price_text
-
-
-# POBIERANIE PODKATEGORII PRODUKTU (selenium)
-def scrape_product_data_subcategory(driver):
-    breadcrumb_items = driver.find_elements(By.CSS_SELECTOR, 'ul.items li')
-
-    # Ostatnia kategoria to przedostatni element (ostatni to nazwa produktu)
-    if len(breadcrumb_items) >= 2:
-        # Element <li> zawierający link do kategorii
-        last_category_li = breadcrumb_items[-2]
-        # Wewnątrz tego <li> szukamy linku <a>, aby pobrać tekst
-        last_category_a = last_category_li.find_element(By.TAG_NAME, 'a')
-        category_name = last_category_a.text.strip()
-        return category_name
-
+    if main_li:
+        nested_data = build_subcategories(main_li)
+        return nested_data
+    
     return None
-
-
-# POBIERANIE OPISU PRODUKTU (selenium)
-def scrape_product_data_description(driver):
-    desc_container_css = '.product.attribute.description .value'
-    desc_container = driver.find_element(By.CSS_SELECTOR, desc_container_css)
-
-    first_paragraph = desc_container.find_element(By.TAG_NAME, 'p')
-    return first_paragraph.text.strip()
-
-
-# ZDJECIA - TODO
-def scrape_product_data_image_url(driver):
-    image_elements = driver.find_elements(By.CSS_SELECTOR, '.product-image-container .gallery-placeholder__image')
-
-    if not image_elements:
-        image_elements = driver.find_elements(By.CSS_SELECTOR, '.fotorama__img')
-
-    urls = set()
-    for img in image_elements:
-        url = img.get_attribute('src') or img.get_attribute('data-src')
-
-        if url:
-            cleaned_url = url.split('?')[0]
-            urls.add(cleaned_url)
-            if len(urls) >= 2:
-                break
-
-    return list(urls)
-
-
-# POBIERANIE DANYCH PRODUKTU (selenium)
-def scrape_product_data_selenium(driver, product_url, product_name):
+       
+def extract_product_data(product_html_block):
+    soup = BeautifulSoup(str(product_html_block), 'html.parser')
     
-    product_data = {
-        'name': product_name,
-        'url': product_url,
-        'price': None,
-        'description_snippet': None,
-        'Kolor/Rozmiar': None,
-        'last_category': None,
-        'image_urls': [] 
-    }
-    
-    # Ustawienie czasu oczekiwania
-    WAIT_TIME = 30
+    product_data = {}
 
-    # Kolor/rozmiar - bierzemy z nazwy, zawsze jest po "-" w nazwie
-    try:
-        separator = " - "
-        if separator in product_name:
-            variant_info = product_name.split(separator)[-1].strip()
-            product_data['Kolor/Rozmiar'] = variant_info
-        
-    except Exception as e:
-        print(f"  ❌ Błąd przy ekstrakcji Kolor/Rozmiar z nazwy: {e}")
-            
-    try:
-        driver.get(product_url)
-        wait = WebDriverWait(driver, WAIT_TIME)
-        wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'h1')))
+    title_element = soup.select_one('h2.product-title a')
+    if title_element:
+        product_data['name'] = title_element.get_text(strip=True)
+        product_data['link'] = title_element.get('href')
+    else:
+        thumbnail_link = soup.select_one('a.product-thumbnail')
+        if thumbnail_link:
+             product_data['link'] = thumbnail_link.get('href')
+             product_data['name'] = soup.select_one('article').get('data-id-product') # Jeśli nie ma nazwy, użyj ID
 
-        try:
-            product_data['price'] = scrape_product_data_price(driver)
-        except NoSuchElementException:
-            pass 
+    price_element = soup.select_one('span.price')
+    if price_element:
+        price_text = price_element.get_text(strip=True)
+        clean_price = re.sub(r'[^\d,]', '', price_text).replace(',', '.')
+        product_data['price'] = clean_price
+    else:
+        product_data['price'] = None
 
-        try:
-            product_data['last_category'] = scrape_product_data_subcategory(driver)
-        except Exception: # tez NoSuchElementException?
-            pass 
-
-        try:
-            product_data['description_snippet'] = scrape_product_data_description(driver)
-        except NoSuchElementException:
-            pass
-
-        # Zdjecia - TODO
-        # Wymagamy dwóch zdjęć w dużej rozdzielczości.
-        try:
-            product_data['image_urls'] = scrape_product_data_image_url(driver)
-        except Exception as e:
-            print(f"  ❌ Wystąpił błąd przy pobieraniu URL-i zdjęć: {e}")
-            
-        print(f"   ✅ Zebrano dane: Cena: {product_data['price']}, Kolor/Rozmiar: {product_data['Kolor/Rozmiar']}")
-        
-    except TimeoutException:
-        print(f"   ❌ Przekroczono limit czasu ładowania (TIMEOUT) dla produktu.")
-    except Exception as e:
-        print(f"   ❌ Wystąpił nieznany błąd podczas scrapowania produktu: {e}")
-        
-    finally:
-        time.sleep(DELAY_SECONDS) 
-        
     return product_data
 
+def scrape_category_products(category_url):
+    products_list = []
+    category_list_data = []
+    
+    try:
+        response = requests.get(category_url, timeout=15)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Błąd podczas pobierania strony {category_url}: {e}")
+        return []
 
-# PĘTLA GŁÓWNA - merge z tą na dole
+    soup = BeautifulSoup(response.text, 'html.parser')
+    product_containers = soup.select('div.js-product.product')
+    
+    category_list_data = extract_breadcrumbs_data(soup)
+    
+    if not product_containers:
+        print(f"Brak produktów w kategorii: {category_url}")
+        return []
 
-# def main_scraper():
-#     # Sprawdzenie, czy kategorie zostały już pobrane i zapisane.
-#     kategorie = load_categories(CATEGORIES_FILE)
-#     if not kategorie:
-#         kategorie = create_categories()
-#         if not kategorie:
-#              return
-
-#     all_product_links = []
-
-#     # Iteracja po kategoriach i pobranie linków
-#     for i, kategoria in enumerate(kategorie):
-#         print(f"\n======== ROZPOCZYNAM KATEGORIĘ {i + 1}/{len(kategorie)} ========")
-
-#         # Inicjalizacja sterownika przed każdą kategorią
-#         driver = initialize_driver()
-#         if not driver:
-#             print("Nie można zainicjalizować sterownika, przerywam.")
-#             break
-
-#         try:
-#             # Scrapowanie linków
-#             links = scrape_product_links_selenium(driver, kategoria['url'], kategoria['name'])
-#             all_product_links.extend(links)
-
-#         finally:
-#             # Zamykamy przeglądarkę po zakończeniu scrapowania tej kategorii
-#             driver.quit()
-#             print("Zakończono sesję przeglądarki.")
-
-#             # 🤡
-#             sleep_duration = random.uniform(DELAY_SECONDS, DELAY_SECONDS_MAX)
-#             print(f"Czekanie {sleep_duration:.2f}s przed uruchomieniem następnej sesji.")
-#             time.sleep(sleep_duration)
-
-
-#     # Zapis końcowy
-#     if all_product_links:
-#         os.makedirs('scraper/results', exist_ok=True)
-#         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-#             json.dump(all_product_links, f, indent=4, ensure_ascii=False)
-
-#         print(f"\n==========================================")
-#         print(f"Sukces! Zebrano łącznie {len(all_product_links)} linków produktowych.")
-#         print(f"Zapisano w: {OUTPUT_FILE}")
-#         print(f"==========================================")
-#     else:
-#         print("Nie zebrano żadnych linków produktowych.")
-
-# if __name__ == "__main__":
-#     main_scraper()
-
-
-# Iteracja po produktach, używając nowej sesji na każdy produkt 🤡
-def get_detailed_data(product_links_to_scrape):
-    all_detailed_data = []
-
-    for i, product_info in enumerate(product_links_to_scrape):
-        product_url = product_info['url']
-        product_name = product_info['name']
-
-        print(f"\n======== ROZPOCZYNAM PRODUKT {i + 1}/{len(product_links_to_scrape)}: {product_name} ========")
-
-        driver = initialize_driver()
-        if not driver:
-            print("Nie można zainicjalizować sterownika, przerywam.")
+    for container in product_containers:
+        data = extract_product_data(container)
+        data['kategorie'] = category_list_data
+        
+        if len(products_list) >= MAX_PRODUCTS_PP:
             break
+        
+        products_list.append(data)
+        
+    print(f"      -> Rozpoczęcie szczegółowego scrapowania {len(products_list)} produktów...")
+    
+    for i, product in enumerate(products_list):
+        if product.get('link'):
+            print(f"         Przetwarzanie produktu {i + 1}/{len(products_list)}")
+                 
+            details = scrape_single_product_details(product['link'])
+            product.update(details)
+            
+            sleep(SLEEP_MIN)
+    
+    return products_list
 
-        try:
-            # Scrapowanie szczegółów produktu
-            data = scrape_product_data_selenium(driver, product_url, product_name)
-            all_detailed_data.append(data)
-
-        finally:
-            driver.quit()
-
-            sleep_duration = random.uniform(DELAY_SECONDS, DELAY_SECONDS_MAX)
-            print(f"Czekanie {sleep_duration:.2f}s przed uruchomieniem następnej sesji.")
-            time.sleep(sleep_duration)
-
-    return all_detailed_data
-
-
-def save_data(all_detailed_data):
-    try:
-        result_dir = os.path.join(BASE_DIR, '..', 'results')
-        os.makedirs(result_dir, exist_ok=True)
-        with open(OUTPUT_DATA_FILE, 'w', encoding='utf-8') as f:
-            json.dump(all_detailed_data, f, indent=4, ensure_ascii=False)
-
-        print(f"\n==========================================")
-        print(f"Sukces! Zebrano dane dla {len(all_detailed_data)} produktów.")
-        print(f"Zapisano w: {OUTPUT_DATA_FILE}")
-        print(f"==========================================")
-    except Exception as e:
-        print(f"\n==========================================")
-        print(f"❌ Błąd przy zapisie: {e}")
-
-
-def main_scraper():
-    # Wczytanie linków do produktów z jsona z linkami
-    try:
-        with open(INPUT_LINKS_FILE, 'r', encoding='utf-8') as f:
-            product_links_to_scrape = json.load(f)
-        print(f"✅ Wczytano {len(product_links_to_scrape)} linków do produktów.")
-    except FileNotFoundError:
-        print(f"❌ Błąd: Nie znaleziono pliku linków: {INPUT_LINKS_FILE}. Uruchom najpierw etap zbierania linków.")
+def find_deepest_links(category_node, deepest_links):
+    if not category_node.get('podkategorie'):
+        deepest_links.append(category_node['link'])
         return
+    
+    for sub_category in category_node['podkategorie']:
+        find_deepest_links(sub_category, deepest_links)
 
-    all_detailed_data = get_detailed_data(product_links_to_scrape)
+def load_json_and_find_links(json_filepath):
 
-    # Zapis końcowy
-    if all_detailed_data:
-        save_data(all_detailed_data)
+    try:
+        with open(json_filepath, 'r', encoding='utf-8') as f:
+            categories_tree = json.load(f)
+    except FileNotFoundError:
+        print(f"Błąd: Nie znaleziono pliku {json_filepath}.")
+        return []
+    
+    if not isinstance(categories_tree, list):
+         categories_tree = [categories_tree] 
+
+    deepest_links = []
+    
+    for main_category in categories_tree:
+        find_deepest_links(main_category, deepest_links)
+    
+    return list(set(deepest_links))
+
+def extract_breadcrumbs_data(soup):
+    breadcrumbs_list = soup.select('nav.breadcrumb ol li')
+    
+    category_names = [
+        li.get_text(strip=True) for li in breadcrumbs_list if li.get_text(strip=True) != 'Strona główna'
+    ]
+    
+    return category_names[:3]
+
+def download_image_to_local_path(image_url, product_id, image_index):
+    os.makedirs(PHOTOS_DIR, exist_ok=True)
+    
+    if not image_url:
+        return ""
+    
+    filename = f"{product_id}_photo_{image_index + 1}.jpg"
+    local_path = os.path.join(PHOTOS_DIR, filename)
+    
+    try:
+        response = requests.get(image_url, timeout=10)
+        if response.status_code == 200:
+            with open(local_path, 'wb') as f:
+                f.write(response.content)
+            return filename
+        else:
+            print(f"Nie udało się pobrać zdjęcia: {image_url}")
+            return f"Błąd HTTP {response.status_code}"
+    except requests.RequestException:
+        return "Błąd pobierania"
+
+    return filename
+
+def scrape_single_product_details(product_url):
+    details = {}
+    
+    try:
+        response = requests.get(product_url, timeout=10)
+        response.raise_for_status()
+    except requests.exceptions.RequestException:
+        return details
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    product_name_el = soup.select_one('h1.h1')
+    
+    if product_name_el:
+        raw_name = product_name_el.get_text(strip=True)
+        file_identifier = sanitize_filename(raw_name)
     else:
-        print("Nie zebrano żadnych szczegółowych danych.")
+        file_identifier = 'unknown'
 
+    image_links = []
+    thumb_containers = soup.select('ul.product-images.js-qv-product-images li.thumb-container')
+    
+    for i, li in enumerate(thumb_containers[:2]):
+        picture_tag = li.select_one('.thumb')
+        if picture_tag:
+            medium_src = picture_tag.get('data-image-medium-src')
+        
+            if medium_src:
+                final_url = medium_src
+                local_path = download_image_to_local_path(final_url, file_identifier, i)
+                
+                details[f'photo_{i+1}'] = local_path
+                image_links.append(final_url)
+            
+    details['photo_urls'] = image_links
 
+    description_full_el = soup.select_one('div.product-description')
+    if description_full_el:
+        details['opis_html'] = str(description_full_el) 
+    else:
+        details['opis_html'] = None
+        
+    tabs_el = soup.select_one('div.tabs')
+    if tabs_el:
+        details['szczegoly_html'] = str(tabs_el)
+    else:
+        details['szczegoly_html'] = None
+    
+    return details
+
+def main():
+    # kategorie = build_categories() 
+        
+    # with open(RESULTS_CATEGORIES_DIR, 'w', encoding='utf-8') as f:
+    #     json.dump(kategorie, f, indent=4, ensure_ascii=False)
+
+    deepest_links = load_json_and_find_links(RESULTS_CATEGORIES_DIR)
+    
+    all_products_data = []
+    
+    for i, link in enumerate(deepest_links):
+        print(f"\n--- Przetwarzanie linku {i + 1}/{len(deepest_links)}: {link} ---")
+        products_from_category = scrape_category_products(link)
+        all_products_data.extend(products_from_category)
+        
+        sleep(SLEEP_MAX)
+        
+    with open(RESULTS_PRODUCTSLINKS_DIR, 'w', encoding='utf-8') as f:
+        json.dump(all_products_data, f, indent=4, ensure_ascii=False)    
+            
 if __name__ == "__main__":
-    main_scraper()
+    main()

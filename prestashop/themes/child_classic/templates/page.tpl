@@ -35,10 +35,13 @@
 {/block}
 
 {block name='content'}
+
+  {block name="mid_col"}
   <script type="text/javascript">
     let contentWrapper = document.getElementById("content-wrapper");
     contentWrapper.classList.add('mid-col');
   </script>
+  {/block}
 
   <section id="main">
 
