@@ -60,13 +60,13 @@ def cart_page(driver):
     print(f"Removed {removed} products from the cart\n\n")
 
 
-def account_page(driver, type="register"):
+def account_page(driver, type="register", email: str = "", password: str = ""):
     account = AccountPage(driver)
 
     if type == "register":
         user_data = account.register_new_user()
     else:
-        user_data = account.login(email="psscarpeta@gmail.com", password="qwerty")
+        user_data = account.login(email=email, password=password)
 
     print(f"Registered user: {user_data}\n\n")
 
