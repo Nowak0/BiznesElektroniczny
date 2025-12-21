@@ -5,8 +5,7 @@ from decimal import Decimal, ROUND_HALF_UP
 import requests
 
 api_url = "https://localhost/api"
-# api_key = "QSP3GTBTPDJ7MJR9KYN2TSS8KB2V28MY"
-api_key = "		JKB27S16DEIRFKI9SZH4DZ8EUAA37VPE"
+api_key = "JKB27S16DEIRFKI9SZH4DZ8EUAA37VPE"
 
 
 def extract_id_from_xml(xml_text):
@@ -201,6 +200,49 @@ def update_stock(stock_id, product_id, quantity):
     return True
 
 
+def add_promo(product_id, promo=0.15):
+    xml = f"""
+    <prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+      <specific_price>
+        <id_product><![CDATA[{product_id}]]></id_product>
+        <id_product_attribute><![CDATA[0]]></id_product_attribute>
+        <id_shop><![CDATA[1]]></id_shop>
+        <id_shop_group><![CDATA[0]]></id_shop_group>
+        
+        <id_cart><![CDATA[0]]></id_cart>
+
+        <id_currency><![CDATA[0]]></id_currency>
+        <id_country><![CDATA[0]]></id_country>
+        <id_group><![CDATA[0]]></id_group>
+        <id_customer><![CDATA[0]]></id_customer>
+
+        <price><![CDATA[-1]]></price>
+        <from_quantity><![CDATA[1]]></from_quantity>
+
+        <reduction><![CDATA[{promo}]]></reduction>
+        <reduction_tax><![CDATA[1]]></reduction_tax>
+        <reduction_type><![CDATA[percentage]]></reduction_type>
+
+        <from><![CDATA[0000-00-00 00:00:00]]></from>
+        <to><![CDATA[0000-00-00 00:00:00]]></to>
+      </specific_price>
+    </prestashop>
+    """
+
+    response = requests.post(
+        f"{api_url}/specific_prices",
+        data=xml.encode("utf-8"),
+        headers={"Content-Type": "application/xml"},
+        auth=(api_key, ""),
+        verify=False
+    )
+
+    # return response.status_code, response.text
+    if response.status_code not in (200, 201):
+        raise Exception(f"Promo create failed: {response.status_code}\n{response.text}")
+    return True
+
+
 def add_product_image(product_id, file_path, position=1, cover=1):
     url = f"{api_url}/images/products/{product_id}?position={position}&cover={cover}"
 
@@ -233,6 +275,8 @@ def process_products(product_list, categories_dict):
 
         if product_id != -1:
             update_stock(stock_id, product_id, random.randint(0, 10))
+            if random.random() < 0.1:
+                add_promo(product_id)
             p1 = p.get("photo_1")
             p2 = p.get("photo_2")
             if p1:
