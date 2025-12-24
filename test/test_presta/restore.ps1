@@ -1,0 +1,12 @@
+# restore-prestashop.ps1
+# Najprostsza wersja: wszystko leci przez CMD, bez zmiennych.
+
+cmd /c "type backup\prestashop.sql | docker exec -i db1 mysql --default-character-set=utf8mb4 -u root -pprestashop prestashop"
+
+cmd /c "type backup\img.tar.gz | docker exec -i presta1 tar xzf - -C /var/www/html"
+cmd /c "docker exec presta1 chown -R www-data:www-data /var/www/html/img"
+
+cmd /c "type backup\cod_module.tar.gz | docker exec -i presta1 tar xzf - -C /var/www/html/modules"
+cmd /c "docker exec presta1 chown -R www-data:www-data /var/www/html/modules/ps_cashondelivery"
+cmd /c "type backup\slider_module.tar.gz | docker exec -i presta1 tar xzf - -C /var/www/html/modules"
+cmd /c "docker exec presta1 chown -R www-data:www-data /var/www/html/modules/ps_imageslider"
