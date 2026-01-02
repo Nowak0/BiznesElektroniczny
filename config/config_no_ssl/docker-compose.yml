@@ -1,0 +1,57 @@
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: db1
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: prestashop
+      MYSQL_DATABASE: prestashop
+    networks:
+      - prestashop
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  prestashop:
+    image: prestashop/prestashop:1.7.8
+    container_name: presta1
+    environment:
+      DB_PASSWD: prestashop
+      DB_NAME: prestashop
+      DB_PREFIX: ps_
+      DB_SERVER: mysql
+      DB_USER: root
+      PS_COUNTRY: pl
+      PS_LANGUAGE: pl
+      PS_DEV_MODE: 1
+      ADMIN_MAIL: admin@admin.pl
+      ADMIN_PASSWD: admin
+      PS_FOLDER_ADMIN: admin2137
+      PS_FOLDER_INSTALL: install2137
+      PS_INSTALL_AUTO: 1
+      PS_DOMAIN: localhost:8081
+    depends_on:
+      - mysql
+    networks:
+      - prestashop
+    ports:
+      - "8081:80"
+    volumes:
+      - ../../prestashop/themes/child_classic:/var/www/html/themes/child_classic
+      - psdata:/var/www/html
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1125:1025" # SMTP (inne niż prod)
+      - "18025:8025" # Web UI (inne niż prod)
+    networks:
+      - prestashop
+
+networks:
+  prestashop:
+
+volumes:
+  dbdata:
+  psdata:
