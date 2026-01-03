@@ -14,7 +14,9 @@ services:
       - dbdata:/var/lib/mysql
 
   prestashop:
-    image: prestashop/prestashop:1.7.8
+    build:
+      context: ../..
+      dockerfile: config/config_no_ssl/Dockerfile
     container_name: presta1
     environment:
       DB_PASSWD: prestashop
