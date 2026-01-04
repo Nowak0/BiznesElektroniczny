@@ -1,0 +1,25 @@
+name: CI - build obrazu Prestashop
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build obrazu sklepu
+        run: |
+          docker build \
+            -t prestashop-custom:latest \
+            -f config/config_no_ssl/Dockerfile \
+            .
+
+      - name: Lista obrazów Docker
+        run: docker images
