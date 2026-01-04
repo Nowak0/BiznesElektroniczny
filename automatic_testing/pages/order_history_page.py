@@ -4,14 +4,14 @@ from utils import short_delay
 
 
 class OrderHistoryPage(BasePage):
-    ORDER_HISTORY_PAGE_URL = "http://localhost:8081/pl/historia-zamowien"
+    ORDER_HISTORY_PAGE_URL = "historia-zamowien"
     ORDER_ROWS = (By.CSS_SELECTOR, "table.table tbody tr")
     ORDER_STATUS = (By.CSS_SELECTOR, "td span")
     INVOICE_LINK = (By.CSS_SELECTOR, "td.hidden-md-down a")
 
 
     def get_newest_order(self):
-        self.open(self.ORDER_HISTORY_PAGE_URL)
+        self.open(self.base_url+self.ORDER_HISTORY_PAGE_URL)
         short_delay(2,3)
 
         rows = self.driver.find_elements(*self.ORDER_ROWS)

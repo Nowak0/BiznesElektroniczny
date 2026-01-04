@@ -8,10 +8,11 @@ class CartPage(BasePage):
     CART_ITEMS = (By.CSS_SELECTOR, '.cart-item')
     REMOVE_BUTTON = (By.CSS_SELECTOR, '.remove-from-cart')
     PRODUCT_INFO = (By.CSS_SELECTOR, 'a.label')
+    CART_PAGE = "koszyk"
 
 
     def open_cart(self):
-        self.driver.get("http://localhost:8081/pl/koszyk")
+        self.open(self.base_url+self.CART_PAGE)
 
 
     def list_items(self):

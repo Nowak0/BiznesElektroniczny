@@ -1,3 +1,5 @@
+from pandas.core.arrays.string_ import BaseStringArray
+
 from driver import create_driver
 import random
 
@@ -15,18 +17,18 @@ DOWNLOAD_DIR = "./downloads"
 
 
 def warning_page(driver):
-    warning_page = WarningPage(driver)
+    warning_page = WarningPage(driver, BASE_URL)
     warning_page.accept_warning()
 
 
-def category_page(driver, home):
+def category_page(driver, home, search_text: str):
     categories = home.pick_category_links()
     # categories = [("", "https://localhost/pl/43-collecta"), ("", "https://localhost/pl/14-breyer")]
     total_added = []
 
     undone_adds = 0
     for name, url in categories:
-        cat_page = CategoryPage(driver)
+        cat_page = CategoryPage(driver, BASE_URL)
         cat_page.open(url)
         added, undone_adds = cat_page.add_first_n_products_to_cart(n=5, undone_adds=undone_adds)
         total_added.append(added)
@@ -34,9 +36,9 @@ def category_page(driver, home):
     print(f"Added products: {total_added}")
 
     home.open(BASE_URL)
-    search_text = "pies"
+
     home.search(search_text)
-    cat_page = CategoryPage(driver)
+    cat_page = CategoryPage(driver, BASE_URL)
     results = cat_page.list_product_links()
 
     if not results:
@@ -53,14 +55,14 @@ def category_page(driver, home):
 
 
 def cart_page(driver):
-    cart = CartPage(driver)
+    cart = CartPage(driver, BASE_URL)
     cart.open_cart()
     removed = cart.remove_n_items(n=3)
     print(f"Removed {removed} products from the cart\n\n")
 
 
 def account_page(driver, type="register", email: str = "", password: str = ""):
-    account = AccountPage(driver)
+    account = AccountPage(driver, BASE_URL)
 
     if type == "register":
         user_data = account.register_new_user()
@@ -73,7 +75,7 @@ def account_page(driver, type="register", email: str = "", password: str = ""):
 def checkout_page(driver):
     payment_type = "przelew"
 
-    checkout = CheckoutPage(driver)
+    checkout = CheckoutPage(driver, BASE_URL)
     checkout.open_page()
     checkout.select_delivery_info(address="Testowa 1", postcode="30-230", city="Testowanie", phone="123456789")
     checkout.choose_carrier()
@@ -84,7 +86,7 @@ def checkout_page(driver):
 
 
 def order_history_page(driver):
-    history = OrderHistoryPage(driver)
+    history = OrderHistoryPage(driver, BASE_URL)
     newest_order_info = history.get_newest_order()
     history.download_invoice()
     print(f"Newest order: {newest_order_info}")
@@ -94,14 +96,14 @@ def main():
     driver = create_driver(download_dir=DOWNLOAD_DIR, headless=False)
     try:
 
-        home = HomePage(driver)
+        home = HomePage(driver, BASE_URL)
         home.open(BASE_URL)
         short_delay()
 
         if "https" in BASE_URL:
             warning_page(driver)
 
-        category_page(driver, home)
+        category_page(driver, home, "pies")
         cart_page(driver)
         account_page(driver, type="register")
         checkout_page(driver)

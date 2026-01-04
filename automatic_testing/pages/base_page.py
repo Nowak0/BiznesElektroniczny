@@ -4,8 +4,9 @@ from utils import short_delay, wait_for
 
 
 class BasePage:
-    def __init__(self, driver):
+    def __init__(self, driver, base_url: str):
         self.driver = driver
+        self.base_url = base_url
 
 
     def open(self, url):

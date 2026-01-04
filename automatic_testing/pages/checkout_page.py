@@ -7,7 +7,7 @@ from utils import short_delay, random_string
 
 
 class CheckoutPage(BasePage):
-    CHECKOUT_PAGE_LINK = "http://localhost:8081/pl/zamówienie"
+    CHECKOUT_PAGE_LINK = "zamówienie"
     ADDRESS_SELECT = (By.NAME, "address1")
     POSTAL_CODE_SELECT = (By.NAME, "postcode")
     CITY_SELECT = (By.NAME, "city")
@@ -21,7 +21,7 @@ class CheckoutPage(BasePage):
 
 
     def open_page(self):
-        self.open(self.CHECKOUT_PAGE_LINK)
+        self.open(self.base_url+self.CHECKOUT_PAGE_LINK)
         short_delay(2,3)
 
 
