@@ -12,6 +12,8 @@ services:
       - "3307:3306"
     volumes:
       - dbdata:/var/lib/mysql
+    cpus: '0.5'
+    mem_limit: 1024M
 
   prestashop:
     build:
@@ -27,6 +29,7 @@ services:
       PS_COUNTRY: pl
       PS_LANGUAGE: pl
       PS_DEV_MODE: 1
+      PS_SMARTY_CACHE: 1
       ADMIN_MAIL: admin@admin.pl
       ADMIN_PASSWD: admin
       PS_FOLDER_ADMIN: admin2137
@@ -43,6 +46,10 @@ services:
       - ../../prestashop/themes/child_classic:/var/www/html/themes/child_classic
       - psdata:/var/www/html
 
+    cpus: '1.5'
+    mem_limit: 2048M
+
+
   mailhog:
     image: mailhog/mailhog
     ports:
@@ -50,6 +57,8 @@ services:
       - "18025:8025" # Web UI (inne niż prod)
     networks:
       - prestashop
+    cpus: '0.2'
+    mem_limit: 256M
 
 networks:
   prestashop:
