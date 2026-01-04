@@ -12,6 +12,11 @@ services:
       - "3307:3306"
     volumes:
       - dbdata:/var/lib/mysql
+    deploy:
+        resources:
+          limits:
+            cpus: '0.5'
+            memory: 1024M
 
   prestashop:
     build:
@@ -42,6 +47,13 @@ services:
     volumes:
       - ../../prestashop/themes/child_classic:/var/www/html/themes/child_classic
       - psdata:/var/www/html
+      
+  deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 2048M
+
 
   mailhog:
     image: mailhog/mailhog
