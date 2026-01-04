@@ -4,8 +4,8 @@ from utils import random_string, short_delay
 
 
 class AccountPage(BasePage):
-    CREATE_ACCOUNT_PAGE = "https://localhost/pl/logowanie?create_account=1"
-    LOGIN_PAGE = "https://localhost/pl/logowanie"
+    CREATE_ACCOUNT_PAGE = "http://localhost:8081/pl/logowanie?create_account=1"
+    LOGIN_PAGE = "http://localhost:8081/pl/logowanie"
     FIRST_NAME = (By.NAME, "firstname")
     LAST_NAME = (By.NAME, "lastname")
     EMAIL = (By.NAME, "email")

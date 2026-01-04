@@ -4,7 +4,7 @@ from utils import short_delay
 
 
 class OrderHistoryPage(BasePage):
-    ORDER_HISTORY_PAGE_URL = "https://localhost/pl/historia-zamowien"
+    ORDER_HISTORY_PAGE_URL = "http://localhost:8081/pl/historia-zamowien"
     ORDER_ROWS = (By.CSS_SELECTOR, "table.table tbody tr")
     ORDER_STATUS = (By.CSS_SELECTOR, "td span")
     INVOICE_LINK = (By.CSS_SELECTOR, "td.hidden-md-down a")

@@ -1,7 +1,5 @@
-from _pyrepl.commands import home
-
 from driver import create_driver
-import time, random
+import random
 
 from pages.account_page import AccountPage
 from pages.cart_page import CartPage
@@ -12,7 +10,7 @@ from pages.order_history_page import OrderHistoryPage
 from pages.warning_page import WarningPage
 from utils import short_delay
 
-BASE_URL = "https://localhost/pl/"
+BASE_URL = "http://localhost:8081/pl/"
 DOWNLOAD_DIR = "./downloads"
 
 
@@ -36,7 +34,7 @@ def category_page(driver, home):
     print(f"Added products: {total_added}")
 
     home.open(BASE_URL)
-    search_text = "kubek"
+    search_text = "pies"
     home.search(search_text)
     cat_page = CategoryPage(driver)
     results = cat_page.list_product_links()
@@ -51,6 +49,7 @@ def category_page(driver, home):
         result = cat_page.add_given_product_to_cart(product["url"])
 
     print(f"Added product: {product}\n\n")
+    short_delay(2,3)
 
 
 def cart_page(driver):
@@ -72,11 +71,13 @@ def account_page(driver, type="register", email: str = "", password: str = ""):
 
 
 def checkout_page(driver):
+    payment_type = "przelew"
+
     checkout = CheckoutPage(driver)
     checkout.open_page()
     checkout.select_delivery_info(address="Testowa 1", postcode="30-230", city="Testowanie", phone="123456789")
     checkout.choose_carrier()
-    checkout.choose_payment()
+    checkout.choose_payment(payment_type)
     checkout.accept_terms()
     checkout.place_order()
     print("Accepted new order")
@@ -96,7 +97,10 @@ def main():
         home = HomePage(driver)
         home.open(BASE_URL)
         short_delay()
-        warning_page(driver)
+
+        if "https" in BASE_URL:
+            warning_page(driver)
+
         category_page(driver, home)
         cart_page(driver)
         account_page(driver, type="register")
@@ -104,7 +108,7 @@ def main():
         order_history_page(driver)
 
     finally:
-        time.sleep(2)
+        short_delay(2,2)
         driver.quit()
 
 
