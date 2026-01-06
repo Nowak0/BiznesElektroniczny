@@ -108,27 +108,26 @@
     </section>
   {/block}
   {block name='page_content_container' append}
-    {literal}
     <script>
-      window.addEventListener('load', function() {
+      window.addEventListener('DOMContentLoaded', function() {
         gtag('event', 'purchase', {
-          transaction_id: "{/literal}{$order.details.reference}{literal}",
-          value: parseFloat("{/literal}{$order.totals.total.amount}{literal}".replace(/[^0-9.]/g, '')),
-          currency: "{/literal}{$currency.iso_code}{literal}",
+          transaction_id: "{$order.details.reference}",
+          value: parseFloat("{$order.totals.total.amount}".replace(/[^0-9.]/g, '')),
+          currency: "{$currency.iso_code}",
           items: [
-            {/literal}{foreach from=$order.products item=product}{literal}
+            {foreach from=$order.products item=product name=orderLoop}
             {
-              item_id: "{/literal}{$product.id_product}{literal}",
-              item_name: "{/literal}{$product.name|escape:'javascript'}{literal}",
-              price: parseFloat("{/literal}{$product.price}{literal}".replace(/[^0-9.]/g, '')),
-              quantity: parseInt("{/literal}{$product.quantity}{literal}")
-            },
-            {/literal}{/foreach}{literal}
+              item_id: "{$product.id_product}",
+              item_name: "{$product.name|escape:'javascript'}",
+              price: parseFloat("{$product.price}".replace(/[^0-9.]/g, '')),
+              quantity: parseInt("{$product.quantity}")
+            }
+            {if !$smarty.foreach.orderLoop.last},{/if}
+            {/foreach}
           ]
         });
       });
     </script>
-    {/literal}
   {/block}
 
 {/block}

@@ -27,8 +27,18 @@
     {include file='_partials/form-errors.tpl' errors=$errors['']}
   {/block}
 
+  {literal}
+    <script>
+      window.trackSubmitForm = function() {
+        gtag('event', 'page_view', {
+          page_location: 'http://localhost/pl/registration-success'
+        });
+      };
+    </script>
+  {/literal}
+
   <form action="{block name='customer_form_actionurl'}{$action}{/block}" id="customer-form" class="js-customer-form"
-    method="post">
+    method="post" onsubmit="window.trackSubmitForm()">
     <div>
       <div class="form-group row ">
         <label class="col-md-3 form-control-label required" for="field-firstname">

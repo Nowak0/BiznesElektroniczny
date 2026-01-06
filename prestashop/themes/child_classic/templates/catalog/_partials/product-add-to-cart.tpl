@@ -52,26 +52,28 @@
           window.trackAddToCart = function() {
             const qtyInput = document.getElementById('quantity_wanted');
             const qty = qtyInput ? parseInt(qtyInput.value) : 1;
-            const unitPrice = parseFloat("{/literal}{$product.price_amount}{literal}".replace(/[^0-9.]/g, ''));
+            const unitPrice = parseFloat("{$product.price_amount}".replace(/[^0-9.]/g, ''));
             const totalValue = unitPrice * qty;
-            const disc = "{/literal}{$product.has_discount}{literal}"
+            const disc = "{$product.has_discount}"
 
             gtag('event', 'add_to_cart', {
-              currency: "{/literal}{$currency.iso_code}{literal}",
+              currency: "{$currency.iso_code}",
               value: totalValue,
-              item_id: "{/literal}{$product.id_product}{literal}",
-              item_name: "{/literal}{$product.name|escape:'javascript'}{literal}",
+              item_id: "{$product.id_product}",
+              item_name: "{$product.name|escape:'javascript'}",
               price: unitPrice,
               quantity: qty
             });
 
             if (disc === "1") {
               gtag('event', 'promo_cart_add', {
-                item_id: "{/literal}{$product.id_product}{literal}",
-                item_name: "{/literal}{$product.name|escape:'javascript'}{literal}",
+                item_id: "{$product.id_product}",
+                item_name: "{$product.name|escape:'javascript'}",
                 value: totalValue,
+                price: unitPrice,
                 quantity: qty,
-                discount_percentage: "{/literal}{$product.discount_percentage}{literal}"
+                currency: "{$currency.iso_code}",
+                discount_percentage: "{$product.discount_percentage}"
               });
             }
           };
