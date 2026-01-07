@@ -107,27 +107,35 @@
       {hook h='displayOrderConfirmation2'}
     </section>
   {/block}
+
   {block name='page_content_container' append}
-    <script>
-      window.addEventListener('DOMContentLoaded', function() {
-        gtag('event', 'purchase', {
-          transaction_id: "{$order.details.reference}",
-          value: parseFloat("{$order.totals.total.amount}".replace(/[^0-9.]/g, '')),
-          currency: "{$currency.iso_code}",
-          items: [
-            {foreach from=$order.products item=product name=orderLoop}
-            {
-              item_id: "{$product.id_product}",
-              item_name: "{$product.name|escape:'javascript'}",
-              price: parseFloat("{$product.price}".replace(/[^0-9.]/g, '')),
-              quantity: parseInt("{$product.quantity}")
-            }
-            {if !$smarty.foreach.orderLoop.last},{/if}
-            {/foreach}
-          ]
+
+    {literal}
+      <script>
+        window.addEventListener('DOMContentLoaded', function() {
+          gtag('event', 'purchase', {
+            transaction_id: "{/literal}{$order.details.reference}{literal}",
+            value: parseFloat("{/literal}{$order.totals.total.amount}{literal}".replace(',','.').replace(/[^0-9.]/g, '')),
+            currency: "{/literal}{$currency.iso_code}{literal}",
+            items: [
+              {/literal}{foreach from=$order.products item=product name=orderLoop}{literal}
+              {
+                item_id: "{/literal}{$product.id_product}{literal}",
+                item_name: "{/literal}{$product.name|escape:'javascript'}{literal}",
+                price: parseFloat("{/literal}{$product.price}{literal}".replace(',','.').replace(/[^0-9.]/g, '')),
+                quantity: parseInt("{/literal}{$product.quantity}{literal}")
+              }
+              {/literal}{if !$smarty.foreach.orderLoop.last}{literal}
+                ,
+              {/literal}
+              {/if}
+              {/foreach}{literal}
+            ]
+          });
         });
-      });
-    </script>
+      </script>
+    {/literal}
+
   {/block}
 
 {/block}
