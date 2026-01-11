@@ -4,8 +4,8 @@ from utils import random_string, short_delay
 
 
 class AccountPage(BasePage):
-    CREATE_ACCOUNT_PAGE = "https://localhost/pl/logowanie?create_account=1"
-    LOGIN_PAGE = "https://localhost/pl/logowanie"
+    CREATE_ACCOUNT_PAGE = "logowanie?create_account=1"
+    LOGIN_PAGE = "logowanie"
     FIRST_NAME = (By.NAME, "firstname")
     LAST_NAME = (By.NAME, "lastname")
     EMAIL = (By.NAME, "email")
@@ -16,16 +16,8 @@ class AccountPage(BasePage):
     SUBMIT_BUTTON = (By.CSS_SELECTOR, "button[type='submit']")
 
 
-    def open_registration(self):
-        self.open(self.CREATE_ACCOUNT_PAGE)
-
-
-    def open_login_page(self):
-        self.open(self.LOGIN_PAGE)
-
-
     def register_new_user(self):
-        self.open_registration()
+        self.open(self.base_url+self.CREATE_ACCOUNT_PAGE)
         short_delay(2,3)
         first = random_string(prefix="T")
         last = random_string(prefix="F")
@@ -52,7 +44,7 @@ class AccountPage(BasePage):
 
 
     def login(self, email, password):
-        self.open_login_page()
+        self.open(self.base_url+self.LOGIN_PAGE)
         short_delay(2,3)
 
         try:

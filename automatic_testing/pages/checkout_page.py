@@ -7,7 +7,7 @@ from utils import short_delay, random_string
 
 
 class CheckoutPage(BasePage):
-    CHECKOUT_PAGE_LINK = "https://localhost/pl/zamówienie"
+    CHECKOUT_PAGE_LINK = "zamówienie"
     ADDRESS_SELECT = (By.NAME, "address1")
     POSTAL_CODE_SELECT = (By.NAME, "postcode")
     CITY_SELECT = (By.NAME, "city")
@@ -18,11 +18,10 @@ class CheckoutPage(BasePage):
     ADDRESS_BUTTON = (By.NAME, "confirm-addresses")
     CARRIER_BUTTON = (By.NAME, "confirmDeliveryOption")
     PAYMENT_BUTTON = (By.CSS_SELECTOR, "button[type='submit'], .btn.btn-primary.center-block")
-    PAYMENT_TYPE = "gotówk"
 
 
     def open_page(self):
-        self.open(self.CHECKOUT_PAGE_LINK)
+        self.open(self.base_url+self.CHECKOUT_PAGE_LINK)
         short_delay(2,3)
 
 
@@ -58,7 +57,7 @@ class CheckoutPage(BasePage):
             raise Exception(f"Error: {e}")
 
 
-    def choose_payment(self):
+    def choose_payment(self, payment_type: str):
         payment_options = self.driver.find_elements(*self.PAYMENT_OPTIONS)
 
         if not payment_options:
@@ -66,7 +65,7 @@ class CheckoutPage(BasePage):
 
         for option in payment_options:
             label = option.find_element(By.CSS_SELECTOR, "label").text.strip().lower()
-            if self.PAYMENT_TYPE in label:
+            if payment_type in label:
                 radio = option.find_element(By.CSS_SELECTOR, ".custom-radio")
                 radio.click()
                 short_delay()

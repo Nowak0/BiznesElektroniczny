@@ -1,0 +1,46 @@
+services:
+  prestashop:
+    image: esce213/biznes-elektroniczny:latest
+    environment:
+      DB_PASSWD: student
+      DB_NAME: BE_197633
+      DB_SERVER: admin-mysql_db
+      DB_USER: root
+      PS_COUNTRY: pl
+      PS_LANGUAGE: pl
+      PS_DEV_MODE: 1
+      ADMIN_MAIL: admin@admin.pl
+      ADMIN_PASSWD: admin
+      PS_FOLDER_ADMIN: admin2137
+      PS_FOLDER_INSTALL: install2137
+      PS_INSTALL_AUTO: 1
+      PS_DOMAIN: localhost:8081
+    networks:
+      - admin-mysql_default
+    ports:
+      - target: 443
+        published: 19763
+        mode: host
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 2048M
+
+  mailhog:
+    image: mailhog/mailhog
+#    ports:
+#      - "1125:1025" # SMTP (inne niż prod)
+#      - "18025:8025" # Web UI (inne niż prod)
+    networks:
+      - admin-mysql_default
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256M
+
+networks:
+  admin-mysql_default:
+    external: true
+    name: admin-mysql_default

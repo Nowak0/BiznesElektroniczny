@@ -26,6 +26,6 @@ def create_driver(download_dir: str = None, headless: bool = False):
     ChromeDriverManager().install()
     driver = webdriver.Chrome(options=chrome_options)
     driver.set_page_load_timeout(69)
-    driver.implicitly_wait(6.9)\
+    driver.implicitly_wait(6.9)
 
     return driver
