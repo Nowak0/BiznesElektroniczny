@@ -16,33 +16,33 @@ The project uses a **custom child theme**: `child_theme`.
 
 ## Tech stack
 
-| Component            | Technologies / details            |
-| -------------------- | --------------------------------- |
-| Store engine         | PrestaShop 1.7.8                  |
-| Frontend / templates | Smarty (theme + child theme)      |
-| Backend / extensions | PHP + PrestaShop modules          |
-| Styling              | CSS                               |
-| Helper scripts       | Shell                             |
-| Tooling / automation | Docker, docker-compose            |
-| Database             | MySQL (container `prestashop-db`) |
+| Component              | Technologies / details                                   |
+| ---------------------- | -------------------------------------------------------- |
+| Store engine           | PrestaShop 1.7.8                                         |
+| Frontend / templates   | Smarty + HTML (theme + child theme)                      |
+| Backend / extensions   | PHP + PrestaShop modules                                 |
+| Styling                | CSS                                                      |
+| Helper scripts         | Shell (`restore.sh`)                                     |
+| Tooling / automation   | Docker, docker-compose (configs in `config/`)            |
+| Mail / dev tooling     | MailHog (directory `mailhog/`)                           |
+| Automated testing      | Python (directory `automatic_testing/`)                  |
+| Scraping / data helper | Scraper (directory `scraper/`)                           |
+| Analytics              | Google Analytics (tracking: purchase, user registration) |
+| Database               | MySQL (container `prestashop-db`)                        |
 
 Languages used in the repository (according to GitHub):  
-Smarty • Python • CSS • PHP
+HTML • Smarty • Python • CSS • PHP • Shell
 
 ## Structure (excerpt)
 
 ```
 /
-├─ config/
-│  ├─ docker-compose.yml
-│  ├─ (container configuration files)
-├─ themes/
-│  ├─ child_theme/          (custom child theme)
-├─ modules/                 (optional custom modules)
-├─ restore.sh               (script restoring data and assets)
-├─ prestashop.sql           (database dump)
-├─ img.tar.gz               (images archive for /var/www/html/img)
-├─ cod_module.tar.gz        (Cash On Delivery module archive)
+├─ config/              (env / docker config: dev, prod)
+├─ prestashop/          (PrestaShop project files)
+│  └─ themes/           (themes)
+├─ mailhog/             (MailHog setup)
+├─ scraper/             (scraper + assets/results)
+├─ automatic_testing/   (automated tests)
 └─ README.md
 ```
 
@@ -64,8 +64,10 @@ Smarty • Python • CSS • PHP
 
 2. Go to the directory with `docker-compose.yml`:
 
+   e.g.
+
    ```bash
-   cd config
+   cd config/dev
    ```
 
 3. Build and start the containers:
@@ -101,80 +103,28 @@ The script performs:
 - Import of the database dump (`prestashop.sql`) into the MySQL container
 - Extraction of product images/assets into `/var/www/html/img`
 - Setting correct file permissions
-- Extraction of the Cash On Delivery module
-- Setting permissions for the module
-
-Core operations (for reference):
-
-```bash
-# Database import
-type prestashop.sql | docker exec -i prestashop-db mysql --default-character-set=utf8mb4 -u root -pprestashop prestashop
-
-# Extract images
-type img.tar.gz | docker exec -i prestashop tar xzf - -C /var/www/html/img
-docker exec prestashop chown -R www-data:www-data /var/www/html/img/p
-
-# Extract COD module
-type cod_module.tar.gz | docker exec -i prestashop tar xzf - -C /var/www/html/modules
-docker exec prestashop chown -R www-data:www-data /var/www/html/modules/ps_cashondelivery
-```
-
-If you use Linux/macOS and encounter issues with `type`, you can use `cat` equivalents:
-
-```bash
-cat prestashop.sql | docker exec -i prestashop-db mysql --default-character-set=utf8mb4 -u root -pprestashop prestashop
-cat img.tar.gz | docker exec -i prestashop tar xzf - -C /var/www/html/img
-cat cod_module.tar.gz | docker exec -i prestashop tar xzf - -C /var/www/html/modules
-```
+- Extraction of the used modules
+- Setting permissions for the modules
 
 ## PrestaShop configuration
 
 After restoring the data:
 
-1. Open the back office (URL depends on container settings; e.g., http://localhost:8080/admin123).
+1. Open the back office (URL depends on container settings; e.g., http://localhost:8081/admin123).
 2. Verify:
    - The `child_theme` theme is active
-   - The `ps_cashondelivery` module is available
    - Product thumbnails and images display correctly
 3. If needed, clear the cache:
    - Back office -> Advanced Parameters -> Performance -> Clear cache
    - Or manually: `docker exec prestashop rm -rf /var/www/html/var/cache/*`
 
-## Useful commands
-
-```bash
-# List containers
-docker ps
-
-# Shell into the app container
-docker exec -it prestashop bash
-
-# Database backup (example)
-docker exec prestashop-db mysqldump -u root -pprestashop prestashop > backup.sql
-
-# Restart services
-docker compose restart
-```
-
 ## Common issues
 
-| Issue                    | Possible cause                              | Solution                                                     |
-| ------------------------ | ------------------------------------------- | ------------------------------------------------------------ |
-| Missing product images   | Archive not extracted or wrong permissions  | Re-run the restore.sh part related to `img.tar.gz`           |
-| Theme not active         | DB not imported or theme not switched       | Activate `child_theme` in the back office                    |
-| COD module not working   | Incorrect extraction or missing permissions | Check `modules/ps_cashondelivery` and set proper permissions |
-| 500 error in back office | Cache or missing PHP extensions             | Clear cache, check container logs                            |
-
-## Roadmap / further development
-
-- Add CI/CD (GitHub Actions) for image builds
-- Automatic seeding of demo data
-- Integration with external payment services
-- Automated tests (e.g., Playwright / Cypress for frontend, PHPUnit for modules)
-
-## License
-
-(Insert license information – e.g., MIT / none / institutional. If no formal license, it’s good to clarify.)
+| Issue                    | Possible cause                             | Solution                                           |
+| ------------------------ | ------------------------------------------ | -------------------------------------------------- |
+| Missing product images   | Archive not extracted or wrong permissions | Re-run the restore.sh part related to `img.tar.gz` |
+| Theme not active         | DB not imported or theme not switched      | Activate `child_theme` in the back office          |
+| 500 error in back office | Cache or missing PHP extensions            | Clear cache, check container logs                  |
 
 ## Contact
 
