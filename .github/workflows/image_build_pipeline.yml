@@ -18,7 +18,7 @@ jobs:
         run: |
           docker build \
             -t prestashop-custom:latest \
-            -f config/config_no_ssl/Dockerfile \
+            -f config/prod/Dockerfile \
             .
 
       - name: Lista obrazów Docker
