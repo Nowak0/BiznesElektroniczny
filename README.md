@@ -110,7 +110,7 @@ The script performs:
 
 After restoring the data:
 
-1. Open the back office (URL depends on container settings; e.g., http://localhost:8081/admin123).
+1. Open the back office (URL depends on container settings; e.g., http://localhost:8081/admin2137).
 2. Verify:
    - The `child_theme` theme is active
    - Product thumbnails and images display correctly
