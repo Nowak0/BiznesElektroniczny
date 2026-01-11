@@ -18,7 +18,7 @@ services:
   prestashop:
     build:
       context: ../..
-      dockerfile: config/config_no_ssl/Dockerfile
+      dockerfile: config/dev/Dockerfile
     container_name: presta1
     environment:
       DB_PASSWD: prestashop

@@ -1,5 +1,5 @@
 #!/bin/bash
-cat backup/prestashop.sql | docker exec -i db1 mysql --default-character-set=utf8mb4 -u root -pprestashop prestashop
+cat ../dev/backup/prestashop.sql | docker exec -i db1 mysql --default-character-set=utf8mb4 -u root -pprestashop prestashop
 
 DB_CONTAINER="db1"
 DB_NAME="prestashop"
