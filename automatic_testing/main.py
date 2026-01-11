@@ -12,7 +12,7 @@ from pages.order_history_page import OrderHistoryPage
 from pages.warning_page import WarningPage
 from utils import short_delay
 
-BASE_URL = "http://localhost:8081/pl/"
+BASE_URL = "https://localhost:8081/pl/"
 DOWNLOAD_DIR = "./downloads"
 
 
