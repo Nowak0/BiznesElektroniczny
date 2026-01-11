@@ -4,9 +4,9 @@ RUN rm -rf /var/www/html/cache/*
 RUN rm -rf /var/www/html/var/cache/*
 
 COPY prestashop/themes/child_classic /var/www/html/themes/child_classic
-COPY config/config_no_ssl/backup/img.tar.gz /tmp/img.tar.gz
-COPY config/config_no_ssl/backup/menu_module.tar.gz /tmp/menu_module.tar.gz
-COPY config/config_no_ssl/backup/slider_module.tar.gz /tmp/slider_module.tar.gz
+COPY config/dev/backup/img.tar.gz /tmp/img.tar.gz
+COPY config/dev/backup/menu_module.tar.gz /tmp/menu_module.tar.gz
+COPY config/dev/backup/slider_module.tar.gz /tmp/slider_module.tar.gz
 
 RUN tar -xzf /tmp/img.tar.gz -C /var/www/html/ \
     && tar -xzf /tmp/menu_module.tar.gz -C /var/www/html/modules/ \
